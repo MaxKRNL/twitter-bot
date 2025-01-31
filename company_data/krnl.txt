@@ -1,0 +1,414 @@
+KRNL: A Category-Defining Leap in
+Blockchain InfrastructureKRNL Labs is pioneering a new paradigm in the Web3 ecosystem by enabling seamless
+cross-chain composability and decentralized execution. Through innovative modifications to
+Geth (Ethereum Client), KRNL allows decentralized applications (dApps) to offload execution
+tasks to the best-suited blockchain networks or Web2 services. This approach addresses some
+of the most pressing challenges in blockchain today—scalability, resource optimization,
+interoperability, and cost-efficiency.
+Problem Solved by KRNL Technology
+● Scalability and Throughput: KRNL addresses Ethereumʼs scalability challenges by
+acting as a dynamic services marketplace, where execution tasks can be seamlessly
+distributed across multiple blockchain networks or web2 services. This flexible
+execution model enhances throughput by utilizing the most optimized resources
+available while ensuring that the final settlement remains securely anchored to the
+decentralized Ethereum network.
+● Cross-Chain Interoperability: KRNL bridges the gap between disparate blockchains,
+enabling dApps to run smart contracts across multiple networks optimized for specific
+functionalities, effectively matching workloads to the most suitable computational
+environments and driving true cross-chain composability.
+● Optimized Execution and Resource Efficiency: By allowing execution offloading, KRNL
+maximizes resource efficiency and reduces operational costs, making blockchain
+technology more sustainable and accessible.
+● Enhanced Security and Proof of Correct Execution: KRNL ensures that offloaded
+executions return with proof of correctness, maintaining the security and reliability of
+state changes on the primary Ethereum chain, even when leveraging efficient off-chain
+computation.
+● Decentralized Coordination and Decision Making: KRNL empowers smart contracts to
+utilize data from various off-chain and cross-chain executions, enhancing the
+capabilities and intelligence of decentralized decision-making processes.
+Reference:
+Component Based Software Development - Irshad and Noor proposed this model in 2012 (Khan
+and Khan 2012)
+https://www.academia.edu/31484083/An_Improved_Model_for_Component_Based_Software_D
+evelopment
+
+The Future Vision: A Unified Multi-Chain
+Ecosystem
+In a scenario where KRNL technology is deployed across all blockchains, the Web3 community
+would benefit from a unified, efficient, and interconnected ecosystem. Blockchains could
+leverage each otherʼs strengths, optimizing tasks across the network and reducing the
+fragmentation that currently plagues the space. This would lead to:
+● Maximized Efficiency and Specialization: Leveraging the unique strengths of different
+blockchains to perform specific tasks, reducing redundancy and enhancing overall
+ecosystem performance.
+● Resource Optimization and Cost Reduction: Enabling blockchains to offload tasks to the
+most cost-effective and resource-efficient networks, significantly lowering transaction
+fees and energy consumption.
+● Accelerated Innovation and Ecosystem Growth: Lowering development barriers and
+fostering rapid innovation, resulting in a more vibrant ecosystem of decentralized
+applications.
+● Unified User Experience and Reduced Fragmentation: Providing a seamless experience
+for users, who can interact with dApps across multiple chains without the complexities
+of managing multiple wallets and tokens.
+KRNL is not just solving isolated issues within the blockchain space—it is redefining the very
+infrastructure of decentralized computing. By creating a new standard for cross-chain
+interactions and scalable execution, KRNL positions itself as a category-defining project with
+the potential to become the backbone of a unified multi-chain ecosystem. This transformative
+approach presents a compelling investment opportunity, paving the way for the next generation
+of Web3 applications and services.
+
+High Level Architecture
+A high-level diagram describing the architecture of all the components that make up the KRNL
+ecosystem are given in Figure 1 with a description of each.
+
+KRNL Platform
+The KRNL Platform is the component of the architecture that serves as an extension interface
+for KRNL providers and developers to register features, enabling other KRNL users to
+orchestrate complex multichain and off-chain activities through a unified query API.
+There are three actors that utilize the KRNL platform. These actors are:
+● Kernel Provider
+● dApp Developer
+● Smart Contract Developer
+The platformʼs user interface is implemented as a dApp that uses upgradeable smart contracts
+to accomplish its functionality. These include managing the on-chain KRNL registry and
+schemas within IPFS. In Figure 2 there are examples of the data structures that are used by the
+system.
+
+Kernel Provider
+This actor is a person who will use the KRNL platform to register and expose their on/off-chain
+functions (kernels) to the KRNL ecosystem as shown in Figure 3.
+Flow:
+The Kernel Providers enter all the technical details that are needed by the KRNL Node (modified
+Geth Client) to be able to communicate with the on/off-chain functions/services, including the
+fee and a collateral stake to reassure users of their integrity.
+
+Smart Contract Developer
+This actor is a person who has designed a smart contract but now wishes to upgrade it to
+include KRNL functionality. These upgraded smart contracts are referred to as “Registered
+Smart Contractsˮ within the KRNL ecosystem. A screenshot of the user interface is shown in
+Figure 4.
+Flow:
+The Smart Contract Developers register their smart contracts with the KRNL platform (see
+image below) and define all the kernels (execution plan) that need to be enforced as part of
+their protocol.
+
+They also need to upgrade their smart contracts by following the specification given by the
+KRNL protocol as shown in Figure 5 and deploy a Token Authority (TA) that will be used to
+provide the cryptographic security and ultimately the Signature Token (digital signature) with
+other parameters that will be embedded in the smart contract call as a parameter before it is
+signed by the dApp user and transmitted into the blockchain.
+The Signature Token (ST) is used to prove the provenance of the transactions that arrive at the
+registered smart contracts interface and confirm the correctness of the response/result
+returned by the kernels.
+
+dApp Developer
+This actor is a person who can use the KRNL platform to connect their dApp with the registered
+smart contract in order to see the execution plan and kernels that will be executed by the
+protocol as shown in Figure 6.
+
+Flow:
+The dApp Developer can select the registered smart contract they would like to transact with to
+retrieve a unique identifier (Entry ID) and an Access Token (AT - shown in Figure 7) that is
+required to communicate with the KRNL Node and conversely the associated TA that they need
+to set up. These credentials are used to configure the KRNL SDK with the dApp.
+
+Figure 8 provides a sequence diagram of the journey and processes for each actor.
+
+KRNL Node & Token Authority (TA)
+The KRNL Node and TA work together to authenticate the execution of the kernels, manage the
+execution plan (sequence and order of kernels) and check the KRNL Node is legitimate by
+using Runtime Integrity Scanning and private/public key pairs (whitelist) to ensure complete
+integrity of the process.
+KRNL also leverages the existing technology that is already built and tested such as the RPC
+server and GraphQL runtime engine by utilizing custom resolvers to offer Account Abstraction,
+native blockchain read/view (stateless) and Web2 (Open API specification compliance)
+resolvers to execute functions on other optimized environments.
+Runtime Integrity Scanning
+Implementing runtime integrity checks within the application itself can help detect
+modifications. This involves periodically scanning the memory and code sections to ensure
+they havenʼt been tampered with.
+The KRNL Node calculates the SHA256 hash of the executable file at runtime and passes this
+to the TA for comparison with a precomputed hash to detect modifications.
+KRNL Node Private/Public Keys
+The TA can be configured to hold a list of public keys that represent specific KRNL Nodes that
+it considers to be legitimate to strengthen their relationship and add another layer of security.
+
+KRNL Software Development Kit (SDK)
+The KRNL SDK (krnl.js) implements several functions. This includes a “Get Kernel Costˮ and
+“Execute Kernelsˮ as shown in the sequence diagrams in Figure 9 and 10.
+
+When a kernel is registered, the Kernel Provider will set a price for the execution of that kernel.
+The “Get Kernel Costˮ function will look up the cost of each kernel from the decentralized
+registry, do the relevant conversion using UNISWAP and return a total cost so the dApp user
+can confirm their acceptance of the cost before execution is started.
+The “Execute Kernelsˮ function is the core component of the KRNL technology. Once the
+function is called using the KRNL SDK with the appropriate parameters, the KRNL Compute
+Engine in the KRNL Node will communicate with the TA to manage the execution plan of the
+kernels by using the GraphQL runtime and the relevant resolvers as show in the sequence
+diagram in Figure 11.
+
+The purpose of the TA is to control the execution of each kernel, the correctness of the results
+and once the execution plan is successful, it will issue a Signature Token ST with an opinion
+that will be returned to the KRNL SDK with the relevant responses, results, and proofs from the
+kernels.
+The KRNL SDK will use the returned Signature Token, including the opinion from the TA with
+the responses, results, proofs as input parameters to the actual smart contract transaction
+before signing it with the userʼs approval using the crypto wallet then transmitting it to the
+blockchain. Once the EVM executes the registered smart contract, the code within the
+registered smart contract can verify the Signature Token (its authenticity) and use the
+responses, results, and proofs accordingly.
+
+Security Model
+The KRNL protocol uses cryptography (digital signatures) as its primary mechanism to secure
+each component of the system, the communication between them and implement the Proof of
+Provenance PoP technology to maintain a trustless environment.
+The TA is central to the system's integrity, it maintains the same ownership as the registered
+smart contract(s) and acts as a controller agent with any KRNL Node(s) that communicate with
+it.
+The TA has many layers of security, these include:
+Security components:
+● Entry ID:
+○ A unique identifier that is obtained from the TA by a dApp builder.
+● Access Token:
+○ A signed signature of the Entry ID. This is used as a token-based authentication
+mechanism that is used to verify the origin signerʼs key.
+● Node runtime digest whitelisting:
+○ A SHA-256 hash of the run-time binary of the KRNL node that the TA can trust,
+ensuring the authenticity of KRNL nodeʼs binary code.
+● Node key whitelisting:
+○ A KRNL node can be configured with a signer private key. By embedding the
+public key of this pair within the TAʼs whitelist, only legitimate nodes can
+communicate with the TA.
+Communication:
+● Execution plan:
+○ The TA contains the logic to manage the execution plan. There is an “Opinion
+Makerˮ that validates the results and proofs of each kernelʼs execution on each
+communication call, making the decision for the KRNL Compute Engine to
+continue to the next kernel or stop execution. It also provides the final
+Signature Token (ST) if the execution plan was successful. The code and logic
+of the TA is in the full control of the registered smart contract developer.
+● Handshake/Ping-pong mechanism:
+○ TA will verify all security components above on each call from the KRNL
+Compute Engine to ensure the KRNL has not been compromised.
+● Proof of authenticity:
+○ Signature token issued by the TA ensures the authenticity of all parameters for
+registered smart contract function, kernelʼs execution, result and proof of
+kernel. This guarantees the smart contract is receiving all legitimate data when
+using KRNL protocol.
+KRNL Ecosystem
+Figure 12 contains all the details about the platform and how it functions. This is still a work in
+progress but has all the details required to understand the components and how they interact
+with each other including their interfaces.
+
+The following link points to a snapshot of the diagram that allow greater visibility to navigate
+the diagram: url.platform.lat/architecture
+Modular Design of Geth and KRNL
+Geth is built with a modular architecture, where different components (e.g., consensus,
+networking, storage) are separated into distinct packages. This separation allows new
+functionality to be added or existing functionality to be replaced by custom modules. For
+example, the eth package handles Ethereum protocol logic, while the p2p package manages
+peer-to-peer networking.
+KRNL Geth, the forked version of Geth, has been customized to implement a plugin architecture
+that allows for seamless extension and modification of its behavior without altering the
+underlying consensus mechanism. This design choice enables KRNL Geth to maintain
+compatibility with new releases of Geth without requiring changes to its core code. If a
+transaction is processed normally through standard Geth, KRNL Geth can still operate correctly
+and simply pass the transaction along as if nothing had happened. However, when a kernel
+enhanced transaction triggers custom logic at the pre-mempool stage, additional executions
+either on/off-chain are possible before deciding whether to push the transaction into the
+mempool. Rebuilding and re-loading this plugin into an updated KRNL Geth instance maintains
+separation between custom code and underlying blockchain functionality, ensuring smooth
+integration of new releases while preserving the integrity of custom logic.
+Plugin Interface
+The Geth client exposes specific plugin interfaces that developers can implement to introduce
+new functionalities. Plugins are typically Go packages that implement certain interfaces defined
+by the core Geth codebase. These interfaces provide methods for initializing, starting,
+stopping, and managing the lifecycle of plugins.
+
+Plugin Registration
+Plugins are registered with the Geth client during startup. When Geth is initialized, it loads all
+registered plugins (can be selective), initializes them, and makes them available for use
+throughout the nodeʼs lifecycle. This registration is usually done via a init() function within the
+plugin package, which is called by the Go runtime when the package is imported.
+Event Hooks and Middleware
+Plugins can leverage event hooks and middleware provided by Geth to intercept or modify the
+behavior of certain operations. For example:
+● Transaction Pool Hooks: Plugins can hook into the transaction pool to inspect, modify,
+or reject transactions before they are added to the mempool.
+● Consensus Hooks: Plugins can interact with the consensus mechanism to add custom
+validation rules or modify block production logic.
+● Networking Hooks: Plugins can modify or extend networking protocols, enabling
+custom peer discovery or communication methods.
+● RPC Middleware: Plugins can add custom Remote Procedure Call (RPC) methods or
+middleware to handle custom requests or modify responses.
+Interacting with Core Components
+A plugin can interact with core Geth components through APIs and internal packages. For
+example, a plugin might interact with the transaction pool by importing the relevant packages
+and using their exposed functions or data structures. This interaction allows the plugin to
+extend or modify the behavior of the core components without directly altering the Geth source
+code.
+Configuration and Initialization
+During the startup, Geth reads its configuration files and command-line parameters to
+determine which plugins to load and how to configure them. Each plugin can define its own
+configuration parameters, which are parsed and handled by the plugin itself. This configuration
+can include settings such as enabling or disabling the plugin, setting custom parameters, or
+defining integration points with other systems.
+
+Geth Security
+The Geth (Go Ethereum) client has several built-in features and mechanisms to protect it from
+bad actors and malicious behavior within the Ethereum network. These protections are
+designed to prevent malicious activities such as spamming, DDoS attacks, double-spending,
+and other types of network abuse.
+The KRNL node leverages all of these features especially the following:
+● Inbound Connection Limits
+● RPC Rate Limiting
+● Efficient Memory and Resource Management
+● Advanced Networking Stack
+Release Integrity Verification Process
+To maintain the integrity and consistency of our software releases, we will use SHA256
+cryptographic hashes as a verification mechanism. This process helps ensure that the files you
+download are authentic and have not been tampered with or corrupted.
+Hash Generation: For every official release, we generate a SHA256 hash for each file. These
+hashes uniquely represent the exact contents of the files at the time of release.
+Hash Publication: We publish the SHA256 hashes in a file named `SHA256SUMS.txt` alongside
+the release files on our website. This file is made publicly available so users can easily access
+it.
+User Verification: We provide clear instructions to users on how to verify the downloaded files
+against the published SHA256 hashes. Users can run a simple command or use automated
+tools to compare the hash of their downloaded file with the official hash from our
+`SHA256SUMS.txt` file. A match confirms the file's authenticity and integrity.
+Security Measures: We securely host the `SHA256SUMS.txt` file and digitally sign it using a
+GPG key. This additional security measure ensures that users can verify both the integrity of
+the files and the authenticity of the hash file itself.
+Continuous Monitoring: We continuously monitor the distribution channels to ensure that the
+files and their corresponding hash values remain unchanged and consistent with our official
+releases.
+
+Compliance and Testing
+To ensure the KRNL custom module for the Geth client is compliant with the Ethereum network,
+several types of tests are conducted. These tests ensure that the custom modifications or
+extensions do not break core Ethereum functionalities, adhere to Ethereum's protocol
+specifications, and maintain compatibility with other nodes in the network. Here is a
+comprehensive list of tests that we run:
+Unit Tests
+Purpose: To verify that individual functions and components within the custom module work as
+expected.
+Integration Tests
+Purpose: To ensure that the custom module integrates seamlessly with the rest of the Geth
+client and does not cause unintended side effects.
+Protocol Compliance Tests
+Purpose: To ensure the modified node follows Ethereumʼs protocol specifications and can
+correctly participate in the network.
+Some of the key areas we test:
+RPC Compliance: Verify that all RPC methods, including any new custom RPCs,
+conform to the Ethereum JSONRPC API specifications.
+EIP Compliance: Ensure the custom module does not violate any Ethereum
+Improvement Proposals EIPs that are part of the Ethereum specification. For example,
+if your changes impact gas calculations or consensus rules, check against the relevant
+EIPs.
+Tools: Ethereum Test Suite: Official test vectors from the [Ethereum Foundation's
+GitHub repository](https://github.com/ethereum/tests).
+Chain Testing Tools: `go-ethereum`'s built-in testing framework, `eth_tests`, and test
+harnesses like `ethereumjs-testing`.
+Synchronization Tests
+Purpose: To verify that the modified node can successfully synchronize with the rest of the
+Ethereum network. This includesˮ
+Deploy multiple nodes in different synchronization modes and test their ability to sync, using
+testnets like Goerli, or Sepolia, or the main Ethereum network.
+Cross-Client Compatibility Tests
+Purpose: To ensure that the modified node remains compatible with other Ethereum clients
+(e.g., OpenEthereum, Nethermind, Besu).
+
+Performance and Load Testing
+Purpose: To ensure that the custom module does not degrade the performance or scalability of
+the node. This includes:
+● Latency: Test the response times for various operations, especially those involving
+custom logic.
+● Resource Utilization: Monitor CPU, memory, disk, and network usage to ensure that the
+custom module does not introduce significant overhead.
+● Stress Tests: Simulate high traffic scenarios to ensure stability under heavy loads.
+● Tools: Tools like Locust, Apache JMeter, or custom Go scripts to simulate traffic,
+monitor performance, and analyze resource utilization.
+Security Testing
+Purpose: To identify and address any potential security vulnerabilities introduced by the
+custom module. This includes:
+● Static Code Analysis: Scan the codebase for common security issues (e.g., injection
+vulnerabilities, race conditions).
+● Fuzz Testing: Provide random or invalid input to custom RPC endpoints or functions to
+test how the module handles unexpected inputs.
+● Penetration Testing: Attempt to exploit the custom module in controlled environments to
+find potential attack vectors.
+● Tools: Tools like GoSec (for static analysis), Echidna (for fuzz testing smart contracts),
+and custom scripts for targeted penetration tests.
+Regression Tests
+Purpose: To ensure that new changes do not break existing functionality. This includes:
+● Run All Existing Tests: Re-run all existing unit, integration, and compliance tests for Geth
+to ensure that modifications did not introduce any regressions.
+● Custom Test Suites: Develop and run test suites specific to the custom module's
+functionality.
+● Tools: Geth's existing test framework, automated CI/CD pipelines.
+End-to-End Tests E2E
+Purpose: To test the entire system flow, including the custom module, in real-world scenarios.
+This includes:
+● Simulate full workflows involving the custom module, such as transaction submission,
+block production, and consensus.
+● Test interactions across multiple nodes in a testnet to validate network-wide behavior.
+● Tools: Multi-node testnets, both local and on public testnets, scripts to automate user
+actions and transactions.
+User Acceptance Testing UAT
+Purpose: To ensure that the custom module meets the intended requirements and works
+correctly from a user perspective.
+
+Running a KRNL Node
+The KRNL Node is basically a Geth full node with custom plugins, therefore its hardware
+requirements may need to change based on the level of activity it undertakes.
+KRNLʼs plugin introduces new functionality, processes, and resource-intensive operations that
+could impact the nodeʼs overall performance but the minimum specification for a Geth Full
+Node should be enough to operate a KRNL Node at the outset.
+As part of the development of the KRNL Node we are undertaking the following actions:
+Benchmark and Profiling of the KRNL Node
+● Conducting performance benchmarking and profiling to understand the pluginʼs impact
+on CPU, memory, disk, and network usage.
+● Tools: Using tools like pprof (Goʼs performance profiling tool), htop, iostat, dstat, and
+nload to measure resource utilization.
+● Set up a controlled test environment and run the Geth node with the custom plugin
+under various scenarios (e.g., high transaction load, different types of transactions,
+syncing with the network).
+● Monitor and record CPU, memory, disk I/O, and network usage to identify potential
+bottlenecks.
+Optimize the Plugin Code
+● Optimize the custom plugin to reduce its resource footprint.
+● Techniques:
+○ Algorithmic Optimization: Improve the efficiency of the algorithms used within
+the plugin (e.g., use more efficient data structures, avoid redundant
+computations).
+○ Memory Management: Use more efficient memory handling techniques, such as
+memory pooling or garbage collection optimization, to reduce memory usage.
+○ Disk I/O Optimization: Minimize disk writes and reads by using caching,
+batching, or compression.
+○ Concurrency: Use Goʼs concurrency model (goroutines, channels) to parallelize
+tasks and make better use of CPU resources.
+○ Lazy Loading: Load data or perform operations only when necessary to reduce
+startup times and memory usage.
+Implement Resource Limiting and Monitoring
+● Implement resource limits and monitoring to prevent the custom plugin from consuming
+excessive resources.
+● Techniques:
+○ Resource Capping: Use resource limits (e.g., cgroups on Linux) to restrict the
+CPU, memory, or I/O usage of the Geth process or the custom plugin.
+○ Monitoring Tools: Use monitoring tools like Prometheus, Grafana, or custom
+scripts to track resource usage and set up alerts for unusual behavior.
+○ Fail-Safes: Implement fail-safes within the plugin to gracefully handle situations
+where resource limits are reached.
+
+Summary
+By leveraging KRNL's open framework and modular stack, developers gain access to a
+two-sided marketplace where they can both build and monetize innovative, multi-modal
+composable functions across not just Ethereum and Web3 multichain but also all of Web2
+datasources. At the same time, dApp Developers can access best-in-class kernels to meet
+their specific needs, unlocking new levels of efficiency, responsiveness, and reach. KRNL's
+robust security infrastructure ensures that these operations are conducted within a fortified
+environment, safeguarding against vulnerabilities and enhancing trustworthiness in Web3
+activities. Ultimately, KRNL empowers developers to create more advanced, secure, and
+scalable smart contract solutions, pushing the boundaries of what is possible in decentralized
+applications.

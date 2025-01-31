@@ -61,13 +61,37 @@ Overall style:
 """
 
 # ----------------------------------------------------
-# C) USER INTERACTIONS (Reply Limit)
+# C) LOAD WHITELIST & BLACKLIST
+# ----------------------------------------------------
+
+def load_whitelist(file_path="whitelist.txt"):
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return set(line.strip().lower() for line in f if line.strip())
+    except FileNotFoundError:
+        logging.warning(f"{file_path} not found. Using empty whitelist.")
+        return set()
+
+def load_blacklist(file_path="blacklist.txt"):
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return set(line.strip().lower() for line in f if line.strip())
+    except FileNotFoundError:
+        logging.warning(f"{file_path} not found. Using empty blacklist.")
+        return set()
+    
+whitelist_users = load_whitelist("whitelist.txt")
+blacklist_users = load_blacklist("blacklist.txt")
+
+# ----------------------------------------------------
+# D) USER INTERACTIONS (Reply Limit)
 # ----------------------------------------------------
 try:
     with open("user_interactions.json", "r") as f:
         user_reply_count = json.load(f)
 except FileNotFoundError:
     user_reply_count = {}
+
 
 # ----------------------------------------------------
 # 1. Personalized Trends Logic
