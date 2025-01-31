@@ -64,6 +64,22 @@ twitter-bot/
 │   └── bot.log            # Logging output
 └── requirements.txt       # Dependencies
 
+## **Installation**
+
+1. **Clone** this repository:
+    ```bash
+    git clone 
+    cd twitter-bot-rag-llama
+    ```
+
+2. **Install** dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+    Ensure you have a GPU if running `bitsandbytes` for 8-bit quantization.
+
+3. **Obtain** or **Prepare** your Llama model. Update the `model_name` (e.g., `meta-llama/Llama-3.1-7B-Instruct`) in `llm_utils.py` if needed.
+
 
 ## **Setup & Configuration**
 
@@ -100,11 +116,19 @@ twitter-bot/
 - **Initialize** the LLM by calling `init_model()`.
 
 ### **2. Run Locally**
-```bash
-python3 bot.py
-```
+    ```bash
+    python3 scheduler.py
+    ```
 
-or Run:
-```bash
-python3 scheduler.py
-```
+### **3. Deploy**
+- Cloud VM (GCP): Use `tmux` to keep it running.
+- Docker: Create a Dockerfile, copy in code, install dependencies, run `python3 scheduler.py`.
+
+### **4. Logs**
+- Check `logs/bot.log` for debug info.
+
+## **Detailed Flow**
+
+### **1. Start up**
+- `bot.py` calls `init_model()` -> Llama pipeline is loaded in 8-bit quantization.
+- `initialize_faiss_index()` -> Reads your `.txt`
