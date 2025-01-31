@@ -1,5 +1,11 @@
 # **KRNL Twitter Bot - RAG-Enhanced with Llama**
 
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
+![GitHub Issues](https://img.shields.io/github/issues/MaxKRNL/twitter_bot)
+![GitHub Pull Requests](https://img.shields.io/github/issues-pr/MaxKRNL/twitter_bot)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/MaxKRNL/twitter_bot/ci.yml?branch=main)
+
 This repository contains a **Twitter bot** built with:
 1. **Tweepy (Twitter API v2)**  
 2. **FAISS for retrieval-augmented generation (RAG)**  
@@ -133,4 +139,36 @@ twitter-bot/
 
 ### **1. Start up**
 - `bot.py` calls `init_model()` -> Llama pipeline is loaded in 8-bit quantization.
-- `initialize_faiss_index()` -> Reads your
+- `initialize_faiss_index()` -> Reads your `.txt` data in `company_data/`, chucks & embeds it, builds a FAISS index.
+
+### **2. Posting a Tweet (post_tweet())**
+- Mergs `topics.txt` lines with optional `personalized_trends.txt`.
+- Picks a random topic.
+- Calls `regenerate_tweet_with_rag()` ->
+    - `retrieve_context(topics)` -> gets top-k chunks from FAISS.
+    - The prompt says "use context if relevant".
+    - LLM generates a comedic tweet under 280 chars.
+
+### **3. Replying to Mentions (reply_to_mentions())**
+- Fetches recent mentions from Twitter/X.
+- Checks if user is under 4 replies.
+- Same `generate_tweet_with_rag() call, but the input is the mention text.
+- Posts the reply -> increments `user_reply_count`.
+
+### **4. Model Decides**
+- Because the code always includes RAG context in the prompt, the LLM either uses it if it’s relevant or ignores it if irrelevant.
+
+## **Customization**
+1. Model: Change the `model_name` in `llm_utils.py` to another Llama or Llama-2 variant.
+2. Prompt: Modify comedic style or tone via `STYLE_SUMMARY` / `STYLE_INSTRUCTIONS` in `bot.py`.
+3. FAISS: Adjust chunk size, overlap, or embedding model in `rag_utils.py`.
+4. Reply Frequency: Change `MAX_REPLIES_PER_USER` in `config.py`.
+5. Schedule: Edit intervals (30 min to 2 hours) in `scheduler.py`.
+
+## **Notes & Caveats**
+1. **Twitter Rate Limits**: Tweepy’s `wait_on_rate_limit=True` helps, but watch out for daily posting caps.
+2. **FAISS Memory**: Large corpora = bigger embeddings & index.
+3. **8-bit Limitations**: While memory usage is lower, generation quality can be slightly impacted.
+4. **Hypothetical Endpoints**: `/2/users/personalized_trends` is an example—only works if you have that basic or enterprise API.
+5. **Persona**: Heavily comedic “intern” style. Change instructions for more formal or neutral tone.
+6. Model Hallucinations: RAG helps, but the LLM may still produce inaccuracies. Test thoroughly.
