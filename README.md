@@ -2,9 +2,9 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
-![GitHub Issues](https://img.shields.io/github/issues/MaxKRNL/twitter_bot)
-![GitHub Pull Requests](https://img.shields.io/github/issues-pr/MaxKRNL/twitter_bot)
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/MaxKRNL/twitter_bot/ci.yml?branch=main)
+![GitHub Issues](https://img.shields.io/github/issues/MaxKRNL/twitter-bot)
+![GitHub Pull Requests](https://img.shields.io/github/issues-pr/MaxKRNL/twitter-bot)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/MaxKRNL/twitter-bot/ci.yml?branch=main)
 
 This repository contains a **Twitter bot** built with:
 1. **Tweepy (Twitter API v2)**  
