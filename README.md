@@ -49,6 +49,7 @@ As a result, the **LLM** can self-decide whether to incorporate your internal/co
 ---
 
 ## **Directory Structure**
+```plaintext
 twitter-bot/
 ├── bot.py                 # Main logic for tweeting/replying
 ├── config.py              # Twitter credentials & settings
@@ -63,6 +64,7 @@ twitter-bot/
 ├── logs/
 │   └── bot.log            # Logging output
 └── requirements.txt       # Dependencies
+```
 
 ## **Installation**
 
@@ -131,4 +133,4 @@ twitter-bot/
 
 ### **1. Start up**
 - `bot.py` calls `init_model()` -> Llama pipeline is loaded in 8-bit quantization.
-- `initialize_faiss_index()` -> Reads your `.txt`
+- `initialize_faiss_index()` -> Reads your
