@@ -1,0 +1,5 @@
+tweepy
+transformers
+torch
+faiss-cpu
+sentence-transformers
