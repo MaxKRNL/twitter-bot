@@ -12,7 +12,7 @@ from rag_utils import retrieve_context
 # Global pipeline for reuse
 generation_pipeline = None
 
-def init_model(model_name: str = "meta-llama/Llama-3.1-7B-Instruct"):
+def init_model(model_name: str = "meta-llama/Llama-3.1-8B-Instruct"):
     """
     Initializes a quantized Llama-based model for text generation.
     """
