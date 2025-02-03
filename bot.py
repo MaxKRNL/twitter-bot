@@ -235,7 +235,8 @@ def reply_to_mentions():
         mentions_response = client_v2.get_users_mentions(
             id=my_user_id,
             expansions="author_id",
-            tweet_fields=["author_id", "text"]
+            tweet_fields=["author_id", "text"],
+            user_field=["public_metrics"]
         )
     except Exception as e:
         logging.error(f"Error fetching mentions: {e}")
@@ -245,11 +246,11 @@ def reply_to_mentions():
         logging.info("No new mentions.")
         return
 
-    # 3) Build author_id -> username map
+    # 3) Build author_id -> username + public_metrics map
     user_map = {}
     if mentions_response.includes and "users" in mentions_response.includes:
         for u in mentions_response.includes["users"]:
-            user_map[u.id] = u.username
+            user_map[u.id] = u
 
     # 4) Process each mention
     for mention_tweet in mentions_response.data:
@@ -257,15 +258,30 @@ def reply_to_mentions():
         author_id = mention_tweet.author_id
         if author_id not in user_map:
             continue
+        
+        user_obj = user_map[author_id]
+        author_username = user_obj.username
+        mention_text = mention_tweet.text
 
-        author_username = user_map[author_id]
+        # Make sure we have public_metrics
+        follower_count = 0
+        if user_obj.public_metrics and "followers_count" in user_obj.public_metrics:
+                follower_count = user_obj.public_metrics["followers_count"]
 
-        # Check reply limit
-        if user_reply_count.get(author_username, 0) >= MAX_REPLIES_PER_USER:
-            logging.info(f"Skipping {author_username}, reply limit reached.")
+        # 1) Check blacklist
+        if author_username in blacklist_users:
+            logging.info(f"Skipping {author_username} (blacklisted).")
             continue
 
-        mention_text = mention_tweet.text
+        # 2) Check whitelist (if whitelisted, bypass normal reply count limit)
+        if author_username not in whitelist_users:
+            # Not whitelisted => enforce normal reply limit
+            if user_reply_count.get(author_username, 0) >= MAX_REPLIES_PER_USER:
+                logging.info(f"Skipping {author_username}, reply limit reached.")
+                continue
+
+            if follower_count < 50:
+                logging.info(f"Skipping {author_username}, reply user has only {follower_count}")
 
         # Generate the reply using the same RAG approach
         reply_text = generate_tweet_with_rag(
