@@ -37,7 +37,7 @@ client_v2 = tweepy.Client(
 # ----------------------------------------------------
 # B) INIT LLM + FAISS ONCE
 # ----------------------------------------------------
-init_model("meta-llama/Llama-3.1-7B-Instruct")
+init_model("meta-llama/Llama-3.1-8B-Instruct")
 initialize_faiss_index()
 
 STYLE_SUMMARY = (
