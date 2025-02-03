@@ -3,3 +3,7 @@ transformers
 torch
 faiss-cpu
 sentence-transformers
+numpy<2
+tqdm
+sentencepiece
+python-dotenv
