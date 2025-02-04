@@ -188,35 +188,35 @@ def post_tweet():
     else:
         logging.warning("Generated tweet too long. Skipping.")
 
-def post_krnl_tweet():
-    """
-    Example function if you want a 'KRNL-flavored' tweet.
-    But this calls the same generate_tweet_with_rag, so it's essentially the same as post_tweet.
-    """
-    with open("topics.txt", "r", encoding="utf-8") as file:
-        normal_topics = [line.strip() for line in file if line.strip()]
+# def post_krnl_tweet():
+#     """
+#     Example function if you want a 'KRNL-flavored' tweet.
+#     But this calls the same generate_tweet_with_rag, so it's essentially the same as post_tweet.
+#     """
+#     with open("topics.txt", "r", encoding="utf-8") as file:
+#         normal_topics = [line.strip() for line in file if line.strip()]
 
-    personal_topics = read_personalized_trends("personalized_trends.txt")
-    combined_topics = normal_topics + personal_topics
-    if not combined_topics:
-        logging.warning("No topics or personalized trends to tweet about.")
-        return
+#     personal_topics = read_personalized_trends("personalized_trends.txt")
+#     combined_topics = normal_topics + personal_topics
+#     if not combined_topics:
+#         logging.warning("No topics or personalized trends to tweet about.")
+#         return
 
-    topic = random.choice(combined_topics)
-    tweet_text = generate_tweet_with_rag(STYLE_SUMMARY, STYLE_INSTRUCTIONS, topic, top_k=3)
+#     topic = random.choice(combined_topics)
+#     tweet_text = generate_tweet_with_rag(STYLE_SUMMARY, STYLE_INSTRUCTIONS, topic, top_k=3)
     
-    # Print the generated tweet to terminal before posting
-    print("Generated KRNL Tweet:")
-    print(tweet_text)
+#     # Print the generated tweet to terminal before posting
+#     print("Generated KRNL Tweet:")
+#     print(tweet_text)
 
-    if len(tweet_text) <= 280:
-        try:
-            resp = client_v2.create_tweet(text=tweet_text)
-            logging.info(f"Tweeted: {tweet_text} (ID: {resp.data['id']})")
-        except Exception as e:
-            logging.error(f"Error posting tweet: {e}")
-    else:
-        logging.warning("Generated tweet too long. Skipping.")
+#     if len(tweet_text) <= 280:
+#         try:
+#             resp = client_v2.create_tweet(text=tweet_text)
+#             logging.info(f"Tweeted: {tweet_text} (ID: {resp.data['id']})")
+#         except Exception as e:
+#             logging.error(f"Error posting tweet: {e}")
+#     else:
+#         logging.warning("Generated tweet too long. Skipping.")
 
 def reply_to_mentions():
     """
