@@ -46,7 +46,7 @@ def init_model(model_name: str = "meta-llama/Llama-3.1-8B-Instruct"):
         repetition_penalty=1.1,
         max_new_tokens=80,
         eos_token_id=tokenizer.eos_token_id,
-        early_stopping=True,
+        # early_stopping=True,
         num_return_sequences=1,
     )
 
