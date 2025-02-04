@@ -15,6 +15,9 @@ from bot import (
     read_personalized_trends
 )
 
+print("V2_CLIENT_ID:", V2_CLIENT_ID)
+print("V2_CLIENT_SECRET:", V2_CLIENT_SECRET)
+
 # Initialize the Twitter client using your credentials
 client = tweepy.Client(
     bearer_token=BEARER_TOKEN,
