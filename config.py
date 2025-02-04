@@ -1,4 +1,7 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Twitter API v2 credentials
 BEARER_TOKEN = os.getenv("BEARER_TOKEN")
