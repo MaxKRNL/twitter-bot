@@ -1,7 +1,9 @@
 from llm_utils import init_model, generate_tweet_with_rag
 from rag_utils import initialize_faiss_index
+import torch
 
 def test_generation():
+    torch.cuda.empty_cache()
     # Initialize the FAISS index (dummy for now)
     initialize_faiss_index()
     
