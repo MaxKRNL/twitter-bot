@@ -1,6 +1,7 @@
 import time
 import random
 import logging
+import torch
 from datetime import datetime, timedelta
 
 # Import your bot functions
@@ -49,4 +50,5 @@ def run_bot():
         time.sleep(30)
 
 if __name__ == "__main__":
+    torch.cuda.empty_cache()
     run_bot()
