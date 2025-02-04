@@ -87,9 +87,6 @@ def build_rag_prompt(
     - Do NOT quote these style instructions verbatim.
     - Do NOT use any Hashtags.
     - The tweet must be under 280 characters (including spaces).
-    - Use a sarcastic, self-deprecating, but loyal-to-KRNL tone.
-    - Reference crypto/Web3 or KRNL in a witty way if appropriate.
-    - Keep it concise, show an "intern perspective," comedic, degen, ambitious vibes.
 
     Now, provide ONLY the tweet:
     """
