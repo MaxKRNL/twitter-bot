@@ -31,7 +31,7 @@ def init_model(model_name: str = "meta-llama/Llama-3.1-8B-Instruct"):
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
         quantization_config=quant_config,
-        device_map="auto",
+        device_map="balanced",
         offload_folder="offload",
         offload_state_dict=True
     )
