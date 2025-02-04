@@ -23,7 +23,7 @@ print("BEARER_TOKEN:", repr(BEARER_TOKEN))
 
 try:
     client = tweepy.Client(
-        # bearer_token=BEARER_TOKEN,
+        bearer_token=BEARER_TOKEN,
         consumer_key=CONSUMER_KEY,
         consumer_secret=CONSUMER_SECRET,
         access_token=ACCESS_TOKEN,
