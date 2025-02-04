@@ -30,11 +30,14 @@ def run_bot():
     last_reply_check_time = datetime.now() - timedelta(minutes=5)
 
     while True:
+        logging.info("Scheduler loop running at %s", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        
         # 1) Check if it's time to post a tweet
         if can_post(last_post_time):
             try:
                 post_tweet()
                 last_post_time = datetime.now()  # Update the time after posting
+                logging.info("Posted a tweet at %s", last_post_time.strftime("%Y-%m-%d %H:%M:%S"))
             except Exception as e:
                 logging.error(f"Error in post_tweet: {e}")
 
@@ -43,11 +46,13 @@ def run_bot():
             try:
                 reply_to_mentions()
                 last_reply_check_time = datetime.now()  # Update after checking
+                logging.info("Checked for replies at %s", last_reply_check_time.strftime("%Y-%m-%d %H:%M:%S"))
             except Exception as e:
                 logging.error(f"Error in reply_to_mentions: {e}")
 
         # Sleep a short time to avoid busy-waiting
         time.sleep(30)
+
 
 if __name__ == "__main__":
     torch.cuda.empty_cache()
