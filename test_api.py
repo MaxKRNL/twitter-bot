@@ -3,6 +3,9 @@ import tweepy
 import os
 import traceback
 from config import V2_CLIENT_ID, V2_CLIENT_SECRET, V2_ACCESS_TOKEN, V2_ACCESS_SECRET
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def create_api():
     """
@@ -51,6 +54,11 @@ def test_delete_tweet(api, tweet_id):
         print(traceback.format_exc())
 
 if __name__ == "__main__":
+    print("TWITTER_CLIENT_ID:", repr(os.getenv("TWITTER_CLIENT_ID")))
+    print("TWITTER_CLIENT_SECRET:", repr(os.getenv("TWITTER_CLIENT_SECRET")))
+    print("TWITTER_ACCESS_TOKEN:", repr(os.getenv("TWITTER_ACCESS_TOKEN")))
+    print("TWITTER_ACCESS_SECRET:", repr(os.getenv("TWITTER_ACCESS_SECRET")))
+
     api = create_api()
     if api is None:
         print("Failed to create API. Exiting.")
