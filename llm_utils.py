@@ -44,7 +44,10 @@ def init_model(model_name: str = "meta-llama/Llama-3.1-8B-Instruct"):
         temperature=0.8,
         top_p=0.9,
         repetition_penalty=1.1,
-        max_new_tokens=80
+        max_new_tokens=80,
+        eos_token_id=generation_pipeline.tokenizer.eos_token_id,
+        early_stopping=True,
+        num_return_sequences=1,
     )
 
 # ----------------------------------------------------------------
