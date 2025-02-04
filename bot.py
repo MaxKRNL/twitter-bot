@@ -43,7 +43,7 @@ initialize_faiss_index()
 STYLE_SUMMARY = ("""
     Self-deprecating, aware, comedic, 'degen' vibe, loyal to KRNL,
     ambitious, and passionate about building the future of Web3.
-    Intern perspective but always dreamingly talks about rising to CEO-level.
+    Intern perspective but always dreamily talks about rising to CEO-level.
     Loyal to KRNL, championing Web3 dev tools. Never criticizes KRNL, only itself
     """
 )
@@ -61,7 +61,6 @@ STYLE_INSTRUCTIONS = """
 # ----------------------------------------------------
 # C) LOAD WHITELIST & BLACKLIST
 # ----------------------------------------------------
-
 def load_whitelist(file_path="whitelist.txt"):
     try:
         with open(file_path, "r", encoding="utf-8") as f:
@@ -89,7 +88,6 @@ try:
         user_reply_count = json.load(f)
 except FileNotFoundError:
     user_reply_count = {}
-
 
 # ----------------------------------------------------
 # 1. Personalized Trends Logic
@@ -176,7 +174,11 @@ def post_tweet():
 
     topic = random.choice(combined_topics)
     tweet_text = generate_tweet_with_rag(STYLE_SUMMARY, STYLE_INSTRUCTIONS, topic, top_k=3)
-
+    
+    # Print the generated tweet to terminal before posting
+    print("Generated Tweet:")
+    print(tweet_text)
+    
     if len(tweet_text) <= 280:
         try:
             resp = client_v2.create_tweet(text=tweet_text)
@@ -201,8 +203,11 @@ def post_krnl_tweet():
         return
 
     topic = random.choice(combined_topics)
-    # The same approach, top_k=3
     tweet_text = generate_tweet_with_rag(STYLE_SUMMARY, STYLE_INSTRUCTIONS, topic, top_k=3)
+    
+    # Print the generated tweet to terminal before posting
+    print("Generated KRNL Tweet:")
+    print(tweet_text)
 
     if len(tweet_text) <= 280:
         try:
@@ -244,7 +249,7 @@ def reply_to_mentions():
         logging.info("No new mentions.")
         return
 
-    # 3) Build author_id -> username + public_metrics map
+    # 3) Build author_id -> user object map
     user_map = {}
     if mentions_response.includes and "users" in mentions_response.includes:
         for u in mentions_response.includes["users"]:
@@ -256,30 +261,28 @@ def reply_to_mentions():
         author_id = mention_tweet.author_id
         if author_id not in user_map:
             continue
-        
+
         user_obj = user_map[author_id]
         author_username = user_obj.username
         mention_text = mention_tweet.text
 
-        # Make sure we have public_metrics
+        # Check follower count
         follower_count = 0
         if user_obj.public_metrics and "followers_count" in user_obj.public_metrics:
-                follower_count = user_obj.public_metrics["followers_count"]
+            follower_count = user_obj.public_metrics["followers_count"]
 
-        # 1) Check blacklist
+        # Check blacklist and reply limits
         if author_username in blacklist_users:
             logging.info(f"Skipping {author_username} (blacklisted).")
             continue
 
-        # 2) Check whitelist (if whitelisted, bypass normal reply count limit)
         if author_username not in whitelist_users:
-            # Not whitelisted => enforce normal reply limit
             if user_reply_count.get(author_username, 0) >= MAX_REPLIES_PER_USER:
                 logging.info(f"Skipping {author_username}, reply limit reached.")
                 continue
-
             if follower_count < 50:
-                logging.info(f"Skipping {author_username}, reply user has only {follower_count}")
+                logging.info(f"Skipping {author_username}, reply user has only {follower_count} followers.")
+                continue
 
         # Generate the reply using the same RAG approach
         reply_text = generate_tweet_with_rag(
@@ -288,8 +291,12 @@ def reply_to_mentions():
             mention_text,
             top_k=3
         )
+        
+        # Print the generated reply to terminal before posting
+        print(f"Generated reply for @{author_username}:")
+        print(reply_text)
 
-        # Ensure 280 chars
+        # Ensure tweet length is within limits
         if len(reply_text) > 280:
             reply_text = reply_text[:280].rstrip()
 
