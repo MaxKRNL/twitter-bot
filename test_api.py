@@ -23,18 +23,18 @@ print("ACCESS_SECRET:", repr(ACCESS_SECRET))
 print("BEARER_TOKEN:", repr(BEARER_TOKEN))
 
 # Create a Tweepy client using the provided credentials
-# client = tweepy.Client(
-#     bearer_token=BEARER_TOKEN,
-#     consumer_key=CONSUMER_KEY,
-#     consumer_secret=CONSUMER_SECRET,
-#     access_token=ACCESS_TOKEN,
-#     access_token_secret=ACCESS_SECRET,
-#     wait_on_rate_limit=True
-# )
-
 client = tweepy.Client(
-    bearer_token=BEARER_TOKEN
+    bearer_token=BEARER_TOKEN,
+    consumer_key=CONSUMER_KEY,
+    consumer_secret=CONSUMER_SECRET,
+    access_token=ACCESS_TOKEN,
+    access_token_secret=ACCESS_SECRET,
+    wait_on_rate_limit=True
 )
+
+# client = tweepy.Client(
+#     bearer_token=BEARER_TOKEN
+# )
 
 def test_post_tweet():
     """Posts a test tweet using tweepy.Client and prints the response."""
