@@ -83,6 +83,13 @@ def test_personalized_trends():
 
 if __name__ == "__main__":
     print("=== Testing Twitter API Functionality ===")
+
+    try:
+        me = client.get_me()
+        print("Authenticated as:", me.data)
+    except Exception as e:
+        print("Error fetching user info:", e)
+
     
     # Test posting a tweet
     tweet_id = test_post_tweet()
