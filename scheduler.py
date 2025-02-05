@@ -29,6 +29,7 @@ def run_bot():
 
     while True:
         logging.info("Scheduler loop running at %s", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        print("Scheduler loop running at %s", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         
         if can_post(last_post_time):
             try:

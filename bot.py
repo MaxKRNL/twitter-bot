@@ -178,12 +178,15 @@ def post_tweet():
     # Print the generated tweet to terminal before posting
     print("Generated Tweet:")
     print(tweet_text)
+    print("=============================================================================")
     
     if len(tweet_text) <= 280:
         try:
             resp = client_v2.create_tweet(text=tweet_text)
+            print(f"Tweeted: {tweet_text} (ID: {resp.data['id']})")
             logging.info(f"Tweeted: {tweet_text} (ID: {resp.data['id']})")
         except Exception as e:
+            print(f"Error posting tweet: {e}")
             logging.error(f"Error posting tweet: {e}")
     else:
         logging.warning("Generated tweet too long. Skipping.")
@@ -230,6 +233,7 @@ def reply_to_mentions():
         me = client_v2.get_me()
         my_user_id = me.data.id
     except Exception as e:
+        print(f"Couldn't fetch user info: {e}")
         logging.error(f"Couldn't fetch user info: {e}")
         return
 
@@ -242,10 +246,12 @@ def reply_to_mentions():
             user_field=["public_metrics"]
         )
     except Exception as e:
+        print(f"Error fetching mentions: {e}")
         logging.error(f"Error fetching mentions: {e}")
         return
 
     if not mentions_response.data:
+        print("No new mentions.")
         logging.info("No new mentions.")
         return
 
