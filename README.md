@@ -77,7 +77,7 @@ twitter-bot/
 1. **Clone** this repository:
     ```bash
     git clone 
-    cd twitter-bot-rag-llama
+    cd twitter-bot
     ```
 
 2. **Install** dependencies:
