@@ -20,11 +20,22 @@ print("ACCESS_SECRET:", repr(ACCESS_SECRET))
 print("BEARER_TOKEN:", repr(BEARER_TOKEN))
 
 client = tweepy.Client(
+    bearer_token=BEARER_TOKEN,
     consumer_key=CONSUMER_KEY,
     consumer_secret=CONSUMER_SECRET,
     access_token=ACCESS_TOKEN,
     access_token_secret=ACCESS_SECRET,
 )
+
+auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+auth.set_access_token(ACCESS_TOKEN, ACCESS_SECRET)
+api = tweepy.API(auth)
+
+try:
+    api.verify_credentials()
+    print("Authentication OK")
+except Exception as e:
+    print("Error during authentication:", e)
 
 response = client.create_tweet(text="This tweet is from tweepy simple post testing.")
 
