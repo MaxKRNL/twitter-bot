@@ -25,7 +25,7 @@ logging.basicConfig(filename="logs/bot.log", level=logging.INFO)
 # ----------------------------------------------------
 # A) TWITTER CLIENT
 # ----------------------------------------------------
-client_v2 = tweepy.Client(
+client = tweepy.Client(
     bearer_token=BEARER_TOKEN,
     consumer_key=V2_CLIENT_ID,
     consumer_secret=V2_CLIENT_SECRET,
@@ -98,7 +98,7 @@ def fetch_personalized_trends(user_id: str, max_results=10):
     """
     trends_list = []
     try:
-        response = client_v2._make_request(
+        response = client._make_request(
             method="GET",
             url="/2/users/personalized_trends",
             params={"id": user_id, "max_results": max_results}
@@ -142,7 +142,7 @@ def read_personalized_trends(file_path="personalized_trends.txt"):
 
 def update_personalized_trends(file_path="personalized_trends.txt", max_results=10):
     try:
-        me = client_v2.get_me()
+        me = client.get_me()
         user_id = me.data.id
     except Exception as e:
         logging.error(f"Failed to get current user ID: {e}")
@@ -182,7 +182,7 @@ def post_tweet():
     
     if len(tweet_text) <= 280:
         try:
-            resp = client_v2.create_tweet(text=tweet_text)
+            resp = client.create_tweet(text=tweet_text, user_auth=True)
             print(f"Tweeted: {tweet_text} (ID: {resp.data['id']})")
             logging.info(f"Tweeted: {tweet_text} (ID: {resp.data['id']})")
         except Exception as e:
@@ -230,7 +230,7 @@ def reply_to_mentions():
 
     # 1) Get user ID
     try:
-        me = client_v2.get_me()
+        me = client.get_me()
         my_user_id = me.data.id
     except Exception as e:
         print(f"Couldn't fetch user info: {e}")
@@ -239,7 +239,7 @@ def reply_to_mentions():
 
     # 2) Fetch mentions
     try:
-        mentions_response = client_v2.get_users_mentions(
+        mentions_response = client.get_users_mentions(
             id=my_user_id,
             expansions="author_id",
             tweet_fields=["author_id", "text"],
@@ -308,7 +308,7 @@ def reply_to_mentions():
 
         try:
             final_text = f"@{author_username} {reply_text}"
-            resp = client_v2.create_tweet(
+            resp = client.create_tweet(
                 text=final_text,
                 in_reply_to_tweet_id=mention_id
             )
