@@ -103,12 +103,13 @@ def fetch_personalized_trends(user_id: str, max_results=10):
             url="/2/users/personalized_trends",
             params={"id": user_id, "max_results": max_results}
         )
+
         if not response:
             logging.warning("No response from personalized trends endpoint.")
             return trends_list
 
         data = response.json()
-        trends_data = data.get("data", {}).get("trends", [])
+        trends_data = data.get("data", {}).get("trend_name", [])
         for t in trends_data:
             name = t.get("name")
             if name:

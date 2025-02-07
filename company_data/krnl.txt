@@ -71,12 +71,12 @@ There are three actors that utilize the KRNL platform. These actors are:
 ● Smart Contract Developer
 The platformʼs user interface is implemented as a dApp that uses upgradeable smart contracts
 to accomplish its functionality. These include managing the on-chain KRNL registry and
-schemas within IPFS. In Figure 2 there are examples of the data structures that are used by the
-system.
+schemas within IPFS.
 
 Kernel Provider
 This actor is a person who will use the KRNL platform to register and expose their on/off-chain
-functions (kernels) to the KRNL ecosystem as shown in Figure 3.
+functions (kernels) to the KRNL ecosystem.
+
 Flow:
 The Kernel Providers enter all the technical details that are needed by the KRNL Node (modified
 Geth Client) to be able to communicate with the on/off-chain functions/services, including the
@@ -85,15 +85,15 @@ fee and a collateral stake to reassure users of their integrity.
 Smart Contract Developer
 This actor is a person who has designed a smart contract but now wishes to upgrade it to
 include KRNL functionality. These upgraded smart contracts are referred to as “Registered
-Smart Contractsˮ within the KRNL ecosystem. A screenshot of the user interface is shown in
-Figure 4.
+Smart Contractsˮ within the KRNL ecosystem.
+
 Flow:
 The Smart Contract Developers register their smart contracts with the KRNL platform (see
 image below) and define all the kernels (execution plan) that need to be enforced as part of
 their protocol.
 
 They also need to upgrade their smart contracts by following the specification given by the
-KRNL protocol as shown in Figure 5 and deploy a Token Authority (TA) that will be used to
+KRNL protocol and deploy a Token Authority (TA) that will be used to
 provide the cryptographic security and ultimately the Signature Token (digital signature) with
 other parameters that will be embedded in the smart contract call as a parameter before it is
 signed by the dApp user and transmitted into the blockchain.
@@ -104,15 +104,14 @@ returned by the kernels.
 dApp Developer
 This actor is a person who can use the KRNL platform to connect their dApp with the registered
 smart contract in order to see the execution plan and kernels that will be executed by the
-protocol as shown in Figure 6.
+protocol.
 
 Flow:
 The dApp Developer can select the registered smart contract they would like to transact with to
-retrieve a unique identifier (Entry ID) and an Access Token (AT - shown in Figure 7) that is
+retrieve a unique identifier (Entry ID) and an Access Token (AT) that is
 required to communicate with the KRNL Node and conversely the associated TA that they need
 to set up. These credentials are used to configure the KRNL SDK with the dApp.
 
-Figure 8 provides a sequence diagram of the journey and processes for each actor.
 
 KRNL Node & Token Authority (TA)
 The KRNL Node and TA work together to authenticate the execution of the kernels, manage the
@@ -135,7 +134,7 @@ it considers to be legitimate to strengthen their relationship and add another l
 
 KRNL Software Development Kit (SDK)
 The KRNL SDK (krnl.js) implements several functions. This includes a “Get Kernel Costˮ and
-“Execute Kernelsˮ as shown in the sequence diagrams in Figure 9 and 10.
+“Execute Kernelsˮ.
 
 When a kernel is registered, the Kernel Provider will set a price for the execution of that kernel.
 The “Get Kernel Costˮ function will look up the cost of each kernel from the decentralized
@@ -144,13 +143,13 @@ can confirm their acceptance of the cost before execution is started.
 The “Execute Kernelsˮ function is the core component of the KRNL technology. Once the
 function is called using the KRNL SDK with the appropriate parameters, the KRNL Compute
 Engine in the KRNL Node will communicate with the TA to manage the execution plan of the
-kernels by using the GraphQL runtime and the relevant resolvers as show in the sequence
-diagram in Figure 11.
+kernels by using the GraphQL runtime and the relevant resolvers.
 
 The purpose of the TA is to control the execution of each kernel, the correctness of the results
-and once the execution plan is successful, it will issue a Signature Token ST with an opinion
+and once the execution plan is successful, it will issue a Signature Token (ST) with an opinion
 that will be returned to the KRNL SDK with the relevant responses, results, and proofs from the
 kernels.
+
 The KRNL SDK will use the returned Signature Token, including the opinion from the TA with
 the responses, results, proofs as input parameters to the actual smart contract transaction
 before signing it with the userʼs approval using the crypto wallet then transmitting it to the
@@ -161,7 +160,7 @@ responses, results, and proofs accordingly.
 Security Model
 The KRNL protocol uses cryptography (digital signatures) as its primary mechanism to secure
 each component of the system, the communication between them and implement the Proof of
-Provenance PoP technology to maintain a trustless environment.
+Provenance (PoP) technology to maintain a trustless environment.
 The TA is central to the system's integrity, it maintains the same ownership as the registered
 smart contract(s) and acts as a controller agent with any KRNL Node(s) that communicate with
 it.
@@ -195,13 +194,14 @@ Compute Engine to ensure the KRNL has not been compromised.
 registered smart contract function, kernelʼs execution, result and proof of
 kernel. This guarantees the smart contract is receiving all legitimate data when
 using KRNL protocol.
+
 KRNL Ecosystem
-Figure 12 contains all the details about the platform and how it functions. This is still a work in
-progress but has all the details required to understand the components and how they interact
-with each other including their interfaces.
+This is still a work in progress but has all the details required to understand the components 
+and how they interact with each other including their interfaces.
 
 The following link points to a snapshot of the diagram that allow greater visibility to navigate
 the diagram: url.platform.lat/architecture
+
 Modular Design of Geth and KRNL
 Geth is built with a modular architecture, where different components (e.g., consensus,
 networking, storage) are separated into distinct packages. This separation allows new
@@ -247,6 +247,7 @@ example, a plugin might interact with the transaction pool by importing the rele
 and using their exposed functions or data structures. This interaction allows the plugin to
 extend or modify the behavior of the core components without directly altering the Geth source
 code.
+
 Configuration and Initialization
 During the startup, Geth reads its configuration files and command-line parameters to
 determine which plugins to load and how to configure them. Each plugin can define its own
@@ -355,7 +356,7 @@ block production, and consensus.
 ● Test interactions across multiple nodes in a testnet to validate network-wide behavior.
 ● Tools: Multi-node testnets, both local and on public testnets, scripts to automate user
 actions and transactions.
-User Acceptance Testing UAT
+User Acceptance Testing (UAT)
 Purpose: To ensure that the custom module meets the intended requirements and works
 correctly from a user perspective.
 
