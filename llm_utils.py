@@ -56,6 +56,7 @@ def init_model(model_name: str = "meta-llama/Llama-3.1-8B-Instruct"):
 def build_rag_prompt(
     style_summary: str,
     style_instructions: str,
+    backstory: str,
     user_topic_or_query: str,
     retrieved_context: str
 ) -> str:
@@ -71,6 +72,9 @@ def build_rag_prompt(
 
     Additional style instructions and examples:
     {style_instructions}
+
+    Here is your backstory, use it to incorporate into tweet if it makes sense:
+    {backstory}
 
     You also have the following context from our knowledge base:
     {retrieved_context}

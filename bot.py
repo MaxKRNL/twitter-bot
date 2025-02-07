@@ -58,6 +58,10 @@ STYLE_INSTRUCTIONS = """
 6. Passionate about KRNL, Web3
 """
 
+BACKSTORY = """
+used to be asomaocme.
+"""
+
 # ----------------------------------------------------
 # C) LOAD WHITELIST & BLACKLIST
 # ----------------------------------------------------
@@ -174,7 +178,7 @@ def post_tweet():
         return
 
     topic = random.choice(combined_topics)
-    tweet_text = generate_tweet_with_rag(STYLE_SUMMARY, STYLE_INSTRUCTIONS, topic, top_k=3)
+    tweet_text = generate_tweet_with_rag(STYLE_SUMMARY, STYLE_INSTRUCTIONS, BACKSTORY, topic, top_k=3)
     
     # Print the generated tweet to terminal before posting
     print("Generated Tweet:")
@@ -295,6 +299,7 @@ def reply_to_mentions():
         reply_text = generate_tweet_with_rag(
             STYLE_SUMMARY,
             STYLE_INSTRUCTIONS,
+            BACKSTORY,
             mention_text,
             top_k=3
         )
