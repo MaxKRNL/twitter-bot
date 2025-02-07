@@ -19,3 +19,6 @@ POST_INTERVAL_MAX = 7200   # 2 hours
 
 # Replies per user limit
 MAX_REPLIES_PER_USER = 4
+
+#Allowed DM Senders for adding new topics (use Twitter screen names, without @ sign)
+ALLOWED_DM_USERS = ["JustMaxine1", "Myat292473"]
