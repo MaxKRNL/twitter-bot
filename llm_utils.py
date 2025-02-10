@@ -78,7 +78,7 @@ def build_rag_prompt(
 
     Instructions:
     - If the provided context is relevant to "{user_topic_or_query}", you may incorporate it.
-    - If the context is not relevant, ignore it.
+    - If the context is not relevant to Web3, crypto or future of finance, ignore it.
 
     Task:
     Write a single tweet (under 280 characters) about: "{user_topic_or_query}".
