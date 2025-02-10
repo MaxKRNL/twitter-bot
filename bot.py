@@ -199,11 +199,14 @@ def post_tweet():
     combined_topics = normal_topics 
     if not combined_topics:
         logging.warning("No topics to tweet about.")
+        print("No topics to tweet about.")
         return
 
-    topic = random.choice(combined_topics)
+    # topic = random.choice(combined_topics)
+    topic = random.choice(normal_topics)
     tweet_text = generate_tweet_with_rag(STYLE_SUMMARY, STYLE_INSTRUCTIONS, BACKSTORY, topic, top_k=3)
     
+
     # Print the generated tweet to terminal before posting
     print("Generated Tweet:")
     print(tweet_text)
