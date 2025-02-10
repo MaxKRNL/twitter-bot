@@ -209,7 +209,7 @@ def post_tweet():
     
     if len(tweet_text) <= 280:
         try:
-            resp = client.create_tweet(text=tweet_text, user_auth=True)
+            resp = client.create_tweet(text=tweet_text)
             print(f"Tweeted: {tweet_text} (ID: {resp.data['id']})")
             logging.info(f"Tweeted: {tweet_text} (ID: {resp.data['id']})")
         except Exception as e:
