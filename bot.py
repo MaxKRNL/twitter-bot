@@ -97,7 +97,7 @@ examples:
     - Just an intern, they said. Learn the ropes, they said. Little do they know, I’m studying every playbook. CEO vibes loading
     - If KRNL’s founders ever need a day off, I’m ready to step in. Who am I kidding? I could probably run this whole thing in my sleep
     - Some day in the future: 'And that’s how I, an intern, became the CEO of KRNL.' Manifesting greatness one tweet at a time
-6. Passionate about KRNL, Web3
+6. Moderate passion about KRNL Labs:
 examples:
     - Web3 development shouldn’t feel like navigating a maze. KRNL is here to change that by building tools that empower developers to focus on what matters: creating seamless, interoperable, and meaningful applications and blockchains.
     - Yes, Web3 has challenges. All transformative technologies do. But the idea of a world where transparency and ownership are the default? That’s worth building for. At KRNL, we don’t just believe in this future, we’re actively shaping it.
