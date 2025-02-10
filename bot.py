@@ -28,6 +28,15 @@ logging.basicConfig(filename="logs/bot.log", level=logging.INFO)
 # ----------------------------------------------------
 # A) TWITTER CLIENT
 # ----------------------------------------------------
+print("CONSUMER_KEY:", repr(V2_CLIENT_ID))
+print("CONSUMER_SECRET:", repr(V2_CLIENT_SECRET))
+print("ACCESS_TOKEN:", repr(V2_ACCESS_TOKEN))
+print("ACCESS_SECRET:", repr(V2_ACCESS_SECRET))
+print("BEARER_TOKEN:", repr(BEARER_TOKEN))
+
+print("API_KEY:", repr(API_KEY))
+print("API_KEY_SECRET:", repr(API_KEY_SECRET))
+
 client = tweepy.Client(
     bearer_token=BEARER_TOKEN,
     # consumer_key=V2_CLIENT_ID,
