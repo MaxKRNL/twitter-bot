@@ -28,11 +28,11 @@ print("BEARER_TOKEN:", repr(BEARER_TOKEN))
 # Create a Tweepy client using the provided credentials
 client = tweepy.Client(
     bearer_token=BEARER_TOKEN,
-    consumer_key=API_KEY,
-    consumer_secret=API_KEY_SECRET,
-    access_token=ACCESS_TOKEN,
-    access_token_secret=ACCESS_SECRET,
-    wait_on_rate_limit=True
+    # consumer_key=API_KEY,
+    # consumer_secret=API_KEY_SECRET,
+    # access_token=ACCESS_TOKEN,
+    # access_token_secret=ACCESS_SECRET,
+    # wait_on_rate_limit=True
 )
 
 def fetch_tweet():
