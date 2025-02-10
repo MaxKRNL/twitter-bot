@@ -30,8 +30,10 @@ logging.basicConfig(filename="logs/bot.log", level=logging.INFO)
 # ----------------------------------------------------
 client = tweepy.Client(
     bearer_token=BEARER_TOKEN,
-    consumer_key=V2_CLIENT_ID,
-    consumer_secret=V2_CLIENT_SECRET,
+    # consumer_key=V2_CLIENT_ID,
+    # consumer_secret=V2_CLIENT_SECRET,
+    consumer_key=API_KEY,
+    consumer_secret=API_SECRET,
     access_token=V2_ACCESS_TOKEN,
     access_token_secret=V2_ACCESS_SECRET,
     wait_on_rate_limit=True
