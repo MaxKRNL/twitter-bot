@@ -193,8 +193,9 @@ def post_tweet():
     with open("topics.txt", "r", encoding="utf-8") as file:
         normal_topics = [line.strip() for line in file if line.strip()]
 
-    personal_topics = read_personalized_trends("personalized_trends.txt")
-    combined_topics = normal_topics + personal_topics
+    # personal_topics = read_personalized_trends("personalized_trends.txt")
+    # combined_topics = normal_topics + personal_topics
+    combined_topics = normal_topics 
     if not combined_topics:
         logging.warning("No topics to tweet about.")
         return
