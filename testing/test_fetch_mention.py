@@ -39,11 +39,13 @@ def fetch_tweet():
     try:
         me = client.get_me()
         my_user_id = me.data.id
+        print(f"My ID: {my_user_id}")
     except Exception as e:
         print(f"Couldn't fetch user info: {e}")
         return
 
     try:
+        print("Before getting mentions")
         mentions_response = client.get_users_mentions(
             id=my_user_id,
             # expansions="author_id",
