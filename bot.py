@@ -11,7 +11,7 @@ from config import (
     V2_ACCESS_TOKEN,
     V2_ACCESS_SECRET,
     API_KEY,
-    API_SECRET,
+    API_KEY_SECRET,
     POST_INTERVAL_MIN,
     POST_INTERVAL_MAX,
     MAX_REPLIES_PER_USER,
@@ -33,7 +33,7 @@ client = tweepy.Client(
     # consumer_key=V2_CLIENT_ID,
     # consumer_secret=V2_CLIENT_SECRET,
     consumer_key=API_KEY,
-    consumer_secret=API_SECRET,
+    consumer_secret=API_KEY_SECRET,
     access_token=V2_ACCESS_TOKEN,
     access_token_secret=V2_ACCESS_SECRET,
     wait_on_rate_limit=True
