@@ -190,6 +190,7 @@ def post_tweet():
     Posts a tweet using your LLM with RAG. The model decides
     whether to use any retrieved knowledge.
     """
+    print("Enter post_tweet")
     with open("topics.txt", "r", encoding="utf-8") as file:
         normal_topics = [line.strip() for line in file if line.strip()]
 

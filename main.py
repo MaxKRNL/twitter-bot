@@ -41,6 +41,7 @@ def run_bot():
             try:
                 print("Start computing post")
                 post_tweet()
+                print("after posting")
                 last_post_time = datetime.now()  # Update the time after posting
                 logging.info("Posted a tweet at %s", last_post_time.strftime("%Y-%m-%d %H:%M:%S"))
                 print("Posted a tweet at %s", last_post_time.strftime("%Y-%m-%d %H:%M:%S"))
