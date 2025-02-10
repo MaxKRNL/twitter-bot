@@ -10,9 +10,12 @@ from config import (
     V2_CLIENT_SECRET,
     V2_ACCESS_TOKEN,
     V2_ACCESS_SECRET,
+    API_KEY,
+    API_SECRET,
     POST_INTERVAL_MIN,
     POST_INTERVAL_MAX,
-    MAX_REPLIES_PER_USER
+    MAX_REPLIES_PER_USER,
+    ALLOWED_DM_USERS
 )
 from llm_utils import (
     init_model,
@@ -326,3 +329,179 @@ def reply_to_mentions():
             logging.info(f"Replied to @{author_username}: {final_text} (ID: {resp.data['id']})")
         except Exception as e:
             logging.error(f"Error replying to @{author_username}: {e}")
+
+# ----------------------------------------------------
+# 3. DM Control Functions
+# ----------------------------------------------------
+
+def add_topic(topic_text, file_path="topics.txt"):
+    """
+    Appends the new topic to the topics file if it is not already present.
+    """
+    topic_text = topic_text.strip()
+    if not topic_text:
+        return
+
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            existing_topics = [line.strip() for line in f if line.strip()]
+    except FileNotFoundError:
+        existing_topics = []
+
+    if topic_text in existing_topics:
+        logging.info(f"Topic already exists: {topic_text}")
+        return
+
+    with open(file_path, "a", encoding="utf-8") as f:
+        f.write(topic_text + "\n")
+    logging.info(f"Added new topic: {topic_text}")
+
+def add_to_whitelist(username, file_path="whitelist.txt"):
+    username = username.strip().lower()
+    if not username:
+        return
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            existing = [line.strip().lower() for line in f if line.strip()]
+    except FileNotFoundError:
+        existing = []
+    if username in existing:
+        logging.info(f"{username} is already in whitelist.")
+        return
+    with open(file_path, "a", encoding="utf-8") as f:
+        f.write(username + "\n")
+    logging.info(f"Added {username} to whitelist.")
+
+
+def add_to_blacklist(username, file_path="blacklist.txt"):
+    username = username.strip().lower()
+    if not username:
+        return
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            existing = [line.strip().lower() for line in f if line.strip()]
+    except FileNotFoundError:
+        existing = []
+    if username in existing:
+        logging.info(f"{username} is already in blacklist.")
+        return
+    with open(file_path, "a", encoding="utf-8") as f:
+        f.write(username + "\n")
+    logging.info(f"Added {username} to blacklist.")
+
+def process_direct_messages():
+    """
+    Retrieves DM conversations via Twitter API v2 and processes each conversation by examining its messages.
+    For each message from a permitted account:
+      - If the message contains a colon ":", the text before the colon is treated as the command and the text after as arguments.
+      - If the argument text contains commas, it is split into multiple items (each item is added as a separate line to the corresponding file).
+      - Supported commands:
+            add_topic: <topic1>, <topic2>, ...
+            add_whitelist: <username1>, <username2>, ...
+            add_blacklist: <username1>, <username2>, ...
+      - If the command is unknown or arguments are missing, a feedback message is sent.
+      - If the message does not contain a colon, the DM is considered invalid.
+    Sends a feedback DM to the sender using the v2 endpoint.
+    """
+    try:
+        # Retrieve DM conversations using the v2 endpoint.
+        conversations_response = client.get_dm_conversations()
+        if not conversations_response.data:
+            logging.info("No DM conversations found.")
+            return
+    except Exception as e:
+        logging.error(f"Error fetching DM conversations: {e}")
+        return
+
+    # Get the bot's own user info (to avoid processing its own messages).
+    try:
+        bot_info = client.get_me()
+        bot_id = bot_info.data.id
+    except Exception as e:
+        logging.error(f"Error fetching bot info: {e}")
+        return
+
+    # Process each conversation.
+    for conv in conversations_response.data:
+        conv_id = conv.get("id")
+        try:
+            messages_response = client.get_dm_conversation_messages(dm_conversation_id=conv_id)
+            if not messages_response.data:
+                continue
+        except Exception as e:
+            logging.error(f"Error fetching messages for conversation {conv_id}: {e}")
+            continue
+
+        # Process the messages in the conversation (only process the first message from a permitted user).
+        for msg in messages_response.data:
+            if msg.get("sender_id") == bot_id:
+                continue
+
+            sender_id = msg.get("sender_id")
+            try:
+                sender_response = client.get_user(id=sender_id)
+                sender_username = sender_response.data.username.lower()
+            except Exception as e:
+                logging.error(f"Error fetching sender info for {sender_id}: {e}")
+                continue
+
+            # Import allowed DM users from config.
+            from config import ALLOWED_DM_USERS
+            if sender_username not in [u.lower() for u in ALLOWED_DM_USERS]:
+                continue
+
+            message_text = msg.get("text", "").strip()
+            logging.info(f"Received DM from @{sender_username}: {message_text}")
+
+            feedback = ""
+            # Look for the colon in the message.
+            if ":" in message_text:
+                # Split into command and arguments.
+                command_part, argument_part = message_text.split(":", 1)
+                command = command_part.strip().lower()
+                arguments_str = argument_part.strip()
+                
+                # If commas are present, split into multiple arguments.
+                if "," in arguments_str:
+                    arguments = [arg.strip() for arg in arguments_str.split(",") if arg.strip()]
+                else:
+                    arguments = [arguments_str] if arguments_str else []
+
+                # Process the command.
+                if command == "add_topic":
+                    if arguments:
+                        for arg in arguments:
+                            add_topic(arg)
+                        feedback = f"Hi @{sender_username}, the following topics have been added: {', '.join(arguments)}."
+                    else:
+                        feedback = f"Hi @{sender_username}, no topics provided."
+                elif command == "add_whitelist":
+                    if arguments:
+                        for arg in arguments:
+                            add_to_whitelist(arg)
+                        feedback = f"Hi @{sender_username}, the following usernames have been added to the whitelist: {', '.join(arguments)}."
+                    else:
+                        feedback = f"Hi @{sender_username}, no usernames provided."
+                elif command == "add_blacklist":
+                    if arguments:
+                        for arg in arguments:
+                            add_to_blacklist(arg)
+                        feedback = f"Hi @{sender_username}, the following usernames have been added to the blacklist: {', '.join(arguments)}."
+                    else:
+                        feedback = f"Hi @{sender_username}, no usernames provided."
+                else:
+                    feedback = f"Hi @{sender_username}, unknown command: {command}."
+            else:
+                feedback = f"Hi @{sender_username}, your message does not follow the command format. Please use 'command: argument'."
+
+            # Send feedback DM using the v2 endpoint.
+            try:
+                client.create_direct_message(participant_id=sender_id, text=feedback)
+                logging.info(f"Sent feedback DM to @{sender_username}: {feedback}")
+                print(f"Sent feedback DM to @{sender_username}: {feedback}")
+            except Exception as fe:
+                logging.error(f"Error sending feedback DM to @{sender_username}: {fe}")
+                print(f"Error sending feedback DM to @{sender_username}: {fe}")
+
+            # Process one message per conversation and then move on.
+            break
