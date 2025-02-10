@@ -4,19 +4,7 @@ import os
 import traceback
 import time
 from dotenv import load_dotenv
-from config import (
-    BEARER_TOKEN,
-    CONSUMER_KEY,
-    CONSUMER_SECRET,
-    ACCESS_TOKEN,
-    ACCESS_SECRET,
-    API_KEY,
-    API_KEY_SECRET,
-    POST_INTERVAL_MIN,
-    POST_INTERVAL_MAX,
-    MAX_REPLIES_PER_USER,
-    ALLOWED_DM_USERS
-)
+
 
 # Load environment variables from .env file if you're using one.
 load_dotenv()
