@@ -28,7 +28,7 @@ def run_bot():
       - can_check_mentions(): if True, check & reply to mentions (printing replies to terminal)
     """
     # Initialize times so the bot can start checking right away if desired
-    last_post_time = datetime.now() - timedelta(minutes=5)
+    last_post_time = datetime.now() - timedelta(minutes=90)
     last_mention_check_time = datetime.now() - timedelta(minutes=15)
     last_dm_check_time = datetime.now() - timedelta(minutes=15)
 
