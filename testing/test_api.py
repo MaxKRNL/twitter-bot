@@ -90,7 +90,7 @@ def test_personalized_trends():
         print(traceback.format_exc())
 
 if __name__ == "__main__":
-    print("=== Testing Twitter API Functionality using tweepy.Client ===")
+    # print("=== Testing Twitter API Functionality using tweepy.Client ===")
     
     # Test posting a tweet
     tweet_id = test_post_tweet()
