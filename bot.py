@@ -3,15 +3,16 @@ import json
 import random
 import logging
 import re
+import os
 
 from config import (
-    BEARER_TOKEN,
-    V2_CLIENT_ID,
-    V2_CLIENT_SECRET,
-    V2_ACCESS_TOKEN,
-    V2_ACCESS_SECRET,
-    API_KEY,
-    API_KEY_SECRET,
+    # BEARER_TOKEN,
+    # V2_CLIENT_ID,
+    # V2_CLIENT_SECRET,
+    # V2_ACCESS_TOKEN,
+    # V2_ACCESS_SECRET,
+    # API_KEY,
+    # API_KEY_SECRET,
     POST_INTERVAL_MIN,
     POST_INTERVAL_MAX,
     MAX_REPLIES_PER_USER,
@@ -28,6 +29,16 @@ logging.basicConfig(filename="logs/bot.log", level=logging.INFO)
 # ----------------------------------------------------
 # A) TWITTER CLIENT
 # ----------------------------------------------------
+# Twitter API v2 credentials
+BEARER_TOKEN = os.getenv("BEARER_TOKEN")
+V2_CLIENT_ID = os.getenv("V2_CLIENT_ID")
+V2_CLIENT_SECRET = os.getenv("V2_CLIENT_SECRET")
+V2_ACCESS_TOKEN = os.getenv("V2_ACCESS_TOKEN")
+V2_ACCESS_SECRET = os.getenv("V2_ACCESS_TOKEN_SECRET")
+
+API_KEY = os.getenv("API_KEY")
+API_KEY_SECRET = os.getenv("API_KEY_SECRET")
+
 print("CONSUMER_KEY:", repr(V2_CLIENT_ID))
 print("CONSUMER_SECRET:", repr(V2_CLIENT_SECRET))
 print("ACCESS_TOKEN:", repr(V2_ACCESS_TOKEN))
