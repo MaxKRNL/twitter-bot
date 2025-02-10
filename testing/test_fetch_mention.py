@@ -46,8 +46,8 @@ def fetch_tweet():
     try:
         mentions_response = client.get_users_mentions(
             id=my_user_id,
-            expansions="author_id",
-            tweet_fields=["author_id", "text"],
+            # expansions="author_id",
+            # tweet_fields=["author_id", "text"],
             # user_field=["public_metrics"]
         )
     except Exception as e:
