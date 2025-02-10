@@ -28,7 +28,7 @@ def run_bot():
       - can_check_mentions(): if True, check & reply to mentions (printing replies to terminal)
     """
     # Initialize times so the bot can start checking right away if desired
-    last_post_time = datetime.now() - timedelta(minutes=0)
+    last_post_time = datetime.now() - timedelta(minutes=5)
     last_mention_check_time = datetime.now() - timedelta(minutes=15)
     last_dm_check_time = datetime.now() - timedelta(minutes=15)
 
@@ -37,6 +37,7 @@ def run_bot():
         print("Scheduler loop running at %s", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         
         if can_post(last_post_time):
+            print("Can Post")
             try:
                 post_tweet()
                 last_post_time = datetime.now()  # Update the time after posting
