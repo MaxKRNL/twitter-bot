@@ -52,7 +52,7 @@ def test_generation():
 
     """)
 
-    topic = "The future of decentralized finance"
+    topic = "Day in a park"
     
     tweet = generate_tweet_with_rag(STYLE_SUMMARY, STYLE_INSTRUCTIONS, topic)
     print("Generated Tweet:")
