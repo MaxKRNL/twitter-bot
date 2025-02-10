@@ -268,8 +268,8 @@ def reply_to_mentions():
     try:
         mentions_response = client.get_users_mentions(
             id=my_user_id,
-            expansions="author_id",
-            tweet_fields=["author_id", "text"],
+            expansions=my_user_id,
+            tweet_fields=[my_user_id, "text"],
             user_field=["public_metrics"]
         )
     except Exception as e:
