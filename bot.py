@@ -206,6 +206,7 @@ def post_tweet():
 
     # topic = random.choice(combined_topics)
     topic = random.choice(normal_topics)
+    print(f"Topics: {topic}")
     tweet_text = generate_tweet_with_rag(STYLE_SUMMARY, STYLE_INSTRUCTIONS, BACKSTORY, topic, top_k=3)
     
 
