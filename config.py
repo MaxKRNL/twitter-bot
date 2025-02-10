@@ -5,10 +5,10 @@ load_dotenv()
 
 # Twitter API v2 credentials
 BEARER_TOKEN = os.getenv("BEARER_TOKEN")
-V2_CLIENT_ID = os.getenv("V2_CLIENT_ID")
-V2_CLIENT_SECRET = os.getenv("V2_CLIENT_SECRET")
-V2_ACCESS_TOKEN = os.getenv("V2_ACCESS_TOKEN")
-V2_ACCESS_SECRET = os.getenv("V2_ACCESS_TOKEN_SECRET")
+CONSUMER_KEY = os.getenv("V2_CLIENT_ID")
+CONSUMER_SECRET = os.getenv("V2_CLIENT_SECRET")
+ACCESS_TOKEN = os.getenv("V2_ACCESS_TOKEN")
+ACCESS_SECRET = os.getenv("V2_ACCESS_TOKEN_SECRET")
 
 API_KEY = os.getenv("API_KEY")
 API_KEY_SECRET = os.getenv("API_KEY_SECRET")
