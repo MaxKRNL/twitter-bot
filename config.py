@@ -10,8 +10,8 @@ V2_CLIENT_SECRET = os.getenv("V2_CLIENT_SECRET")
 V2_ACCESS_TOKEN = os.getenv("V2_ACCESS_TOKEN")
 V2_ACCESS_SECRET = os.getenv("V2_ACCESS_SECRET")
 
-TWITTER_API_KEY = os.getenv("TWITTER_API_KEY")
-TWITTER_API_SECRET = os.getenv("TWITTER_API_SECRET")
+API_KEY = os.getenv("API_KEY")
+API_SECRET = os.getenv("API_SECRET")
 
 # Scheduling intervals (in seconds)
 POST_INTERVAL_MIN = 1800   # 30 min
