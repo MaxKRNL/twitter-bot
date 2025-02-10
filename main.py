@@ -17,7 +17,7 @@ def can_check_mentions(last_mention_check_time):
 
 def can_check_dm(last_dm_check_time):
     """Check if the bot can check dm interaction with admin account """
-    return datetime.now() - last_dm_check_time > timedelta(minute=15)
+    return datetime.now() - last_dm_check_time > timedelta(minutes=15)
 
 logging.basicConfig(filename="logs/bot.log", level=logging.INFO)
 
