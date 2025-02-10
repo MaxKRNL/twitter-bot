@@ -11,7 +11,7 @@ V2_ACCESS_TOKEN = os.getenv("V2_ACCESS_TOKEN")
 V2_ACCESS_SECRET = os.getenv("V2_ACCESS_SECRET")
 
 API_KEY = os.getenv("API_KEY")
-API_SECRET = os.getenv("API_SECRET")
+API_SECRET = os.getenv("API_KEY_SECRET")
 
 # Scheduling intervals (in seconds)
 POST_INTERVAL_MIN = 1800   # 30 min
