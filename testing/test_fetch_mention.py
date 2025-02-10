@@ -46,43 +46,17 @@ def fetch_tweet():
 
     try:
         print("Before getting mentions")
-        mentions_response = client.get_users_mentions(
-            id=my_user_id,
-            # expansions="author_id",
-            # tweet_fields=["author_id", "text"],
-            # user_field=["public_metrics"]
-        )
+
+        response = client.get_users_mentions(my_user_id)
+
+        # By default, only the ID and text fields of each Tweet will be returned
+        for tweet in response.data:
+            print(tweet.id)
+            print(tweet.text)
     except Exception as e:
         print(f"Error fetching mentions: {e}")
         return
-    
-    user_map = {}
-    if mentions_response.includes and "users" in mentions_response.includes:
-        for u in mentions_response.includes["users"]:
-            user_map[u.id] = u
 
-    for mention_tweet in mentions_response.data:
-        mention_id = mention_tweet.id
-        print(f"mention id: {mention_id}")
-
-        author_id = mention_tweet.author_id
-        print(f"author_id: {author_id}")
-        if author_id not in user_map:
-            continue
-
-        user_obj = user_map[author_id]
-        author_username = user_obj.username
-        mention_text = mention_tweet.text
-
-        print(f"Author_username: {author_username}")
-        print(f"Mention text: {mention_text}")
-
-    
-    follower_count = 0
-    if user_obj.public_metrics and "followers_count" in user_obj.public_metrics:
-        follower_count = user_obj.public_metrics["followers_count"]
-
-    print(f"The follower counts: {follower_count}")
 
 if __name__ == "__main__":
     print("=== Testing Twitter Mention fetching using tweepy == ")
