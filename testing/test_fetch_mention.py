@@ -21,6 +21,14 @@ from config import (
 # Load environment variables from .env file if you're using one.
 load_dotenv()
 
+BEARER_TOKEN = os.getenv("BEARER_TOKEN")
+CONSUMER_KEY = os.getenv("V2_CLIENT_ID")
+CONSUMER_SECRET = os.getenv("V2_CLIENT_SECRET")
+ACCESS_TOKEN = os.getenv("V2_ACCESS_TOKEN")
+ACCESS_SECRET = os.getenv("V2_ACCESS_TOKEN_SECRET")
+
+API_KEY = os.getenv("API_KEY")
+API_KEY_SECRET = os.getenv("API_KEY_SECRET")
 
 # Print out the credentials (or parts of them) for debugging purposes.
 print("CONSUMER_KEY:", repr(CONSUMER_KEY))
