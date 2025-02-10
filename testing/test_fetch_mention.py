@@ -17,6 +17,10 @@ from config import (
     MAX_REPLIES_PER_USER,
     ALLOWED_DM_USERS
 )
+import sys
+
+# Add the parent directory (twitter-bot) to the sys.path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # Load environment variables from .env file if you're using one.
 load_dotenv()
