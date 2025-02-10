@@ -45,14 +45,14 @@ def run_bot():
             except Exception as e:
                 logging.error(f"Error in post_tweet: {e}")
 
-        if can_check_mentions(last_mention_check_time):
-            try:
-                reply_to_mentions()
-                last_mention_check_time = datetime.now()  # Update after checking
-                logging.info("Checked for replies at %s", last_mention_check_time.strftime("%Y-%m-%d %H:%M:%S"))
-                print("Checked for replies at %s", last_mention_check_time.strftime("%Y-%m-%d %H:%M:%S"))
-            except Exception as e:
-                logging.error(f"Error in reply_to_mentions: {e}")
+        # if can_check_mentions(last_mention_check_time):
+        #     try:
+        #         reply_to_mentions()
+        #         last_mention_check_time = datetime.now()  # Update after checking
+        #         logging.info("Checked for replies at %s", last_mention_check_time.strftime("%Y-%m-%d %H:%M:%S"))
+        #         print("Checked for replies at %s", last_mention_check_time.strftime("%Y-%m-%d %H:%M:%S"))
+        #     except Exception as e:
+        #         logging.error(f"Error in reply_to_mentions: {e}")
 
         if can_check_dm(last_dm_check_time):
             try:
