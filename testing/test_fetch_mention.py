@@ -47,12 +47,13 @@ def fetch_tweet():
     try:
         print("Before getting mentions")
 
-        response = client.get_users_mentions(my_user_id)
+        response = client.get_users_mentions(my_user_id, tweet_field=["created_at", "author_id"])
 
         # By default, only the ID and text fields of each Tweet will be returned
         for tweet in response.data:
             print(tweet.id)
             print(tweet.text)
+
     except Exception as e:
         print(f"Error fetching mentions: {e}")
         return
