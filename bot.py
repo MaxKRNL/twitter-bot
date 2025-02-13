@@ -5,6 +5,10 @@ import logging
 import re
 import os
 
+import time
+from datetime import datetime, timedelta
+import pytz
+
 from config import (
     # BEARER_TOKEN,
     # V2_CLIENT_ID,
@@ -256,106 +260,334 @@ def post_tweet():
 #     else:
 #         logging.warning("Generated tweet too long. Skipping.")
 
+
+def should_skip_user(author_username: str, follower_count: int, 
+                     blacklist_users: set, whitelist_users: set,
+                     user_reply_count: dict, max_replies: int) -> tuple[bool, str]:
+    """
+    Determines if a user should be skipped based on various criteria.
+    
+    Args:
+        author_username: Username of the author
+        follower_count: Number of followers the author has
+        blacklist_users: Set of blacklisted usernames
+        whitelist_users: Set of whitelisted usernames
+        user_reply_count: Dict tracking number of replies per user
+        max_replies: Maximum allowed replies per user
+    
+    Returns:
+        Tuple of (should_skip: bool, skip_reason: str)
+    """
+    # Check blacklist first
+    if author_username in blacklist_users:
+        return True, "blacklisted"
+
+    # Whitelisted users bypass other checks
+    if author_username in whitelist_users:
+        return True, "whitelisted"
+
+    # Check reply limit
+    if user_reply_count.get(author_username, 0) >= max_replies:
+        return True, "reply limit reached"
+
+    # Check follower threshold
+    if follower_count < 50:
+        return True, f"insufficient followers ({follower_count})"
+    
+    return False, ""
+
+
+def format_reply(author_username: str, content: str, max_length: int = 280) -> str:
+    """
+    Truncate to maximum length and format tweet with username mention.
+    
+    Args:
+        author_username: Username to mention in the tweet
+        content: Main content of the tweet
+        max_length: Maximum allowed length of the entire tweet (default: 280)
+    
+    Returns:
+        Truncated and formatted tweet text
+    """
+    mention_part = f"@{author_username}"
+
+    # Truncate content if needed
+    if len(content) > max_length:
+        content = content[:max_length].rstrip()
+        # Find last space to aviod cutting words in middle
+        last_space = content.rfind(' ')
+        if last_space > 0:
+            content = content[:last_space]
+    
+    # Combine username and truncated content
+    return mention_part + " " + content
+
+
+def increment_user_reply_count(author_username, user_reply_count):
+    user_reply_count[author_username] = user_reply_count.get(author_username, 0) + 1
+    save_user_interaction(user_reply_count)
+
+
+def save_user_interaction(user_reply_count, filename="user_interaction.json"):
+    with open(filename, "w") as f:
+        json.dump(user_reply_count, f)
+
+
 def reply_to_mentions():
-    """
-    Replies to mentions, also using the same RAG-based function.
-    The model decides whether to incorporate the retrieved knowledge.
-    """
-    global user_reply_count
-
-    # 1) Get user ID
     try:
-        me = client.get_me()
-        my_user_id = me.data.id
-    except Exception as e:
-        print(f"Couldn't fetch user info: {e}")
-        logging.error(f"Couldn't fetch user info: {e}")
-        return
+        # Retrieve the bot's user ID
+        my_user_id = client.get_me().data.id
 
-    # 2) Fetch mentions
-    try:
-        mentions_response = client.get_users_mentions(
+        # Fetch mentions
+        mentions = client.get_users_mentions(
             id=my_user_id,
-            expansions=my_user_id,
-            tweet_fields=[my_user_id, "text"],
-            user_field=["public_metrics"]
+            expansions="author_id",
+            tweet_fields=["created_at", "author_id"],
+            user_fields=["public_metrics"]
         )
-    except Exception as e:
-        print(f"Error fetching mentions: {e}")
-        logging.error(f"Error fetching mentions: {e}")
-        return
 
-    if not mentions_response.data:
-        print("No new mentions.")
-        logging.info("No new mentions.")
-        return
+        if not mentions.data:
+            print(f"No new mentions.")
+            return
 
-    # 3) Build author_id -> user object map
-    user_map = {}
-    if mentions_response.includes and "users" in mentions_response.includes:
-        for u in mentions_response.includes["users"]:
-            user_map[u.id] = u
+        utc_now = datetime.utcnow().replace(tzinfo=pytz.UTC)
+        time_threshold = utc_now - timedelta(minutes=15)
 
-    # 4) Process each mention
-    for mention_tweet in mentions_response.data:
-        mention_id = mention_tweet.id
-        author_id = mention_tweet.author_id
-        if author_id not in user_map:
-            continue
+        user_lookup = {user.id: user for user in replies.includes.get("users", [])}
 
-        user_obj = user_map[author_id]
-        author_username = user_obj.username
-        mention_text = mention_tweet.text
+        # Process each mention
+        for mention_tweet in mentions.data:
+            tweet_time = mention_tweet.created_at.replace(tzinfo=pytz.UTC)
 
-        # Check follower count
-        follower_count = 0
-        if user_obj.public_metrics and "followers_count" in user_obj.public_metrics:
-            follower_count = user_obj.public_metrics["followers_count"]
-
-        # Check blacklist and reply limits
-        if author_username in blacklist_users:
-            logging.info(f"Skipping {author_username} (blacklisted).")
-            continue
-
-        if author_username not in whitelist_users:
-            if user_reply_count.get(author_username, 0) >= MAX_REPLIES_PER_USER:
-                logging.info(f"Skipping {author_username}, reply limit reached.")
-                continue
-            if follower_count < 50:
-                logging.info(f"Skipping {author_username}, reply user has only {follower_count} followers.")
-                continue
-
-        # Generate the reply using the same RAG approach
-        reply_text = generate_tweet_with_rag(
-            STYLE_SUMMARY,
-            STYLE_INSTRUCTIONS,
-            BACKSTORY,
-            mention_text,
-            top_k=3
-        )
+            if tweet_time >= time_threshold:
         
-        # Print the generated reply to terminal before posting
-        print(f"Generated reply for @{author_username}:")
-        print(reply_text)
+                mention_tweet_id = mention_tweet.id
+                author_id = mention_tweet.author_id
+                mention_text = mention_tweet.text
 
-        # Ensure tweet length is within limits
-        if len(reply_text) > 280:
-            reply_text = reply_text[:280].rstrip()
+                user = user_lookup[author_id]
+                author_username = user.username
 
-        try:
-            final_text = f"@{author_username} {reply_text}"
-            resp = client.create_tweet(
-                text=final_text,
-                in_reply_to_tweet_id=mention_id
+                # Get follower count
+                follower_count = user.public_metrics.get("followers_count", 0)
+
+                should_skip, reason = should_skip_user(
+                    author_username=author_username.lower(),
+                    follower_count=follower_count,
+                    blacklist_users=blacklist_users,
+                    whitelist_users=whitelist_users,
+                    user_reply_count=user_reply_count,
+                    max_replies=MAX_REPLIES_PER_USER
+                )
+
+                if should_skip:
+                    logging.info(f"Skipping {author_username} ({reason})")
+                    continue
+                
+                # Generate the reply
+                generated_reply = generate_tweet_with_rag(
+                    STYLE_SUMMARY,
+                    STYLE_INSTRUCTIONS,
+                    mention_text,
+                    top_k=3
+                )
+
+                formatted_reply = format_reply(
+                    author_username=author_username,
+                    content=generated_reply,
+                    max_length=280
+                )
+
+                # Post the reply tweet
+                client.create_tweet(
+                    text=formatted_reply,
+                    in_reply_to_tweet_id=mention_tweet_id
+                )
+
+                increment_user_reply_count(author_username, user_reply_count)
+
+    except Exception as e:
+        logging.error("Error replying to mention", extra={"username": author_username, "error": str(e)}, exc_info=True)
+
+
+def reply_to_comments():
+    try:
+        # Retrieve the bot's user ID
+        my_user_id = client.get_me().data.id
+
+        # Fetch the bot's most recent tweets
+        tweets = client.get_users_tweets(id=my_user_id, max_results=5)
+
+        # Iterate through each tweet
+        for tweet in tweets.data:
+            tweet_id = tweet.id
+
+            # Construct a query to find replies to this specific tweet
+            query = f'to:{my_user_id} in_reply_to_status_id:{tweet_id}'
+            replies = client.search_recent_tweets(
+                query=query,
+                expansions="author_id",
+                tweet_fields=["text", "author_id"],
+                user_fields=["public_metrics"]
             )
-            user_reply_count[author_username] = user_reply_count.get(author_username, 0) + 1
 
-            with open("user_interactions.json", "w") as f:
-                json.dump(user_reply_count, f)
+            user_lookup = {user.id: user for user in replies.includes.get("users", [])}
 
-            logging.info(f"Replied to @{author_username}: {final_text} (ID: {resp.data['id']})")
-        except Exception as e:
-            logging.error(f"Error replying to @{author_username}: {e}")
+            # Skip if no replies are found
+            if not replies.data:
+                print(f"No replies for tweet ID {tweet_id}.")
+                continue
+
+            # Loop through the replies and respond to each one
+            for reply in replies.data:
+                reply_id = reply.id
+                author_id = reply.author_id
+                reply_text = reply.text
+                user = user_lookup[author_id]
+                author_username = user.username
+
+                # Get follower count
+                follower_count = user.public_metrics.get("followers_count", 0)
+
+                should_skip, reason = should_skip_user(
+                    author_username=author_username.lower(),
+                    follower_count=follower_count,
+                    blacklist_users=blacklist_users,
+                    whitelist_users=whitelist_users,
+                    user_reply_count=user_reply_count,
+                    max_replies=MAX_REPLIES_PER_USER
+                )
+                
+                if should_skip:
+                    logging.info(f"Skipping {author_username} ({reason})")
+                    continue
+
+                # Generate the reply
+                generated_reply = generate_tweet_with_rag(
+                    STYLE_SUMMARY,
+                    STYLE_INSTRUCTIONS,
+                    reply_text,
+                    top_k=3
+                )
+                
+                formatted_reply = format_reply(
+                    author_username=author_username,
+                    content=generated_reply,
+                    max_length=280
+                )
+
+                # Post the reply tweet
+                client.create_tweet(
+                    text=formatted_reply,
+                    in_reply_to_tweet_id=reply_id
+                )
+
+                increment_user_reply_count(author_username, user_reply_count)
+
+    except Exception as e:
+        logging.error("Error replying to comment", extra={"username": author_username, "error": str(e)}, exc_info=True)
+
+
+# def reply_to_mentions():
+#     """
+#     Replies to mentions, also using the same RAG-based function.
+#     The model decides whether to incorporate the retrieved knowledge.
+#     """
+#     global user_reply_count
+
+#     # 1) Get user ID
+#     try:
+#         me = client.get_me()
+#         my_user_id = me.data.id
+#     except Exception as e:
+#         print(f"Couldn't fetch user info: {e}")
+#         logging.error(f"Couldn't fetch user info: {e}")
+#         return
+
+#     # 2) Fetch mentions
+#     try:
+#         mentions_response = client.get_users_mentions(
+#             id=my_user_id,
+#             expansions=my_user_id,
+#             tweet_fields=[my_user_id, "text"],
+#             user_field=["public_metrics"]
+#         )
+#     except Exception as e:
+#         print(f"Error fetching mentions: {e}")
+#         logging.error(f"Error fetching mentions: {e}")
+#         return
+
+#     if not mentions_response.data:
+#         print("No new mentions.")
+#         logging.info("No new mentions.")
+#         return
+
+#     # 3) Build author_id -> user object map
+#     user_map = {}
+#     if mentions_response.includes and "users" in mentions_response.includes:
+#         for u in mentions_response.includes["users"]:
+#             user_map[u.id] = u
+
+#     # 4) Process each mention
+#     for mention_tweet in mentions_response.data:
+#         mention_id = mention_tweet.id
+#         author_id = mention_tweet.author_id
+#         if author_id not in user_map:
+#             continue
+
+#         user_obj = user_map[author_id]
+#         author_username = user_obj.username
+#         mention_text = mention_tweet.text
+
+#         # Check follower count
+#         follower_count = 0
+#         if user_obj.public_metrics and "followers_count" in user_obj.public_metrics:
+#             follower_count = user_obj.public_metrics["followers_count"]
+
+#         # Check blacklist and reply limits
+#         if author_username in blacklist_users:
+#             logging.info(f"Skipping {author_username} (blacklisted).")
+#             continue
+
+#         if author_username not in whitelist_users:
+#             if user_reply_count.get(author_username, 0) >= MAX_REPLIES_PER_USER:
+#                 logging.info(f"Skipping {author_username}, reply limit reached.")
+#                 continue
+#             if follower_count < 50:
+#                 logging.info(f"Skipping {author_username}, reply user has only {follower_count} followers.")
+#                 continue
+
+#         # Generate the reply using the same RAG approach
+#         reply_text = generate_tweet_with_rag(
+#             STYLE_SUMMARY,
+#             STYLE_INSTRUCTIONS,
+#             BACKSTORY,
+#             mention_text,
+#             top_k=3
+#         )
+        
+#         # Print the generated reply to terminal before posting
+#         print(f"Generated reply for @{author_username}:")
+#         print(reply_text)
+
+#         # Ensure tweet length is within limits
+#         if len(reply_text) > 280:
+#             reply_text = reply_text[:280].rstrip()
+
+#         try:
+#             final_text = f"@{author_username} {reply_text}"
+#             resp = client.create_tweet(
+#                 text=final_text,
+#                 in_reply_to_tweet_id=mention_id
+#             )
+#             user_reply_count[author_username] = user_reply_count.get(author_username, 0) + 1
+
+#             with open("user_interactions.json", "w") as f:
+#                 json.dump(user_reply_count, f)
+
+#             logging.info(f"Replied to @{author_username}: {final_text} (ID: {resp.data['id']})")
+#         except Exception as e:
+#             logging.error(f"Error replying to @{author_username}: {e}")
 
 # ----------------------------------------------------
 # 3. DM Control Functions

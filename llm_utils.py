@@ -88,6 +88,7 @@ def build_rag_prompt(
     - Do NOT quote these style instructions verbatim.
     - Do NOT use any Hashtags.
     - The tweet must be under 280 characters (including spaces).
+    - DO NOT mention my Twitter username (@Ai_Bot_Testing) in the tweet.
 
     Now, provide ONLY the tweet:
     """

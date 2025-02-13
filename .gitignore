@@ -1,3 +1,8 @@
 .env
 /venv
 /__pycache__
+
+# python venv
+myat-venv/
+
+test.py
